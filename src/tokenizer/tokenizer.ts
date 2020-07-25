@@ -26,7 +26,10 @@ export default class Tokenizer {
 
     this.states = getStates({
       onStateChange: (state: State) => {
-        // 
+        this.state = state;
+      },
+      onReturnStateChange: (returnState: State) => {
+        this.returnState = returnState;
       },
       onEmit: (character: string) => {
         // 
