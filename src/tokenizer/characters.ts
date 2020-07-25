@@ -1,5 +1,5 @@
 const characters: { [name: string]: string } = {
-  nullCharacter: '\0000',        //
+  nullCharacter: '\u0000',       //
   characterTabulation: '\u0009', //
   lineFeed: '\u000A',            //
   formFeed: '\u000C',            //
