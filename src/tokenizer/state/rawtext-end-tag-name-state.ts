@@ -1,6 +1,6 @@
 import { AbstractState } from "./abstract-state";
 
-// 12.2.5.11 RCDATA end tag name state
+// 12.2.5.14 RAWTEXT end tag name state
 // Consume the next input character p1088:
 // ↪ U+0009 CHARACTER TABULATION (tab)
 // ↪ U+000A LINE FEED (LF)
@@ -22,8 +22,8 @@ import { AbstractState } from "./abstract-state";
 // temporary buffer p1093.
 // ↪ Anything else
 // Emit a U+003C LESS-THAN SIGN character token, a U+002F SOLIDUS character token, and a character token for each of the
-// characters in the temporary buffer p1093 (in the order they were added to the buffer). Reconsume p1093 in the RCDATA state p1094.
-export class RCDATAEndTagNameState extends AbstractState {
+// characters in the temporary buffer p1093 (in the order they were added to the buffer). Reconsume p1093 in the RAWTEXT state p1094.
+export class RAWTEXTEndTagNameState extends AbstractState {
   consume(character: string): void {
     switch (character) {
       default:

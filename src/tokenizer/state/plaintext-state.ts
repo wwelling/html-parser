@@ -1,16 +1,14 @@
 import { AbstractState } from "./abstract-state";
 
-// 12.2.5.4 Script data state
+// 12.2.5.5 PLAINTEXT state
 // Consume the next input character p1088:
-// ↪ U+003C LESS-THAN SIGN (<)
-// Switch to the script data less-than sign state p1098.
 // ↪ U+0000 NULL
 // This is an unexpected-null-character p1081 parse error p1077. Emit a U+FFFD REPLACEMENT CHARACTER character token.
 // ↪ EOF
 // Emit an end-of-file token.
 // ↪ Anything else
 // Emit the current input character p1088 as a character token.
-export class ScriptDataState extends AbstractState {
+export class PLAINTEXTState extends AbstractState {
   consume(character: string): void {
     switch (character) {
       default:
