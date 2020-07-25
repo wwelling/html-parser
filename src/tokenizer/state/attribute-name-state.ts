@@ -1,7 +1,7 @@
 import { AbstractState } from "./abstract-state";
 
 // 12.2.5.33 Attribute name state
-// Consume the next input character p1088:
+// Consume the next input character:
 // ↪ U+0009 CHARACTER TABULATION (tab)
 // ↪ U+000A LINE FEED (LF)
 // ↪ U+000C FORM FEED (FF)
@@ -9,24 +9,24 @@ import { AbstractState } from "./abstract-state";
 // ↪ U+002F SOLIDUS (/)
 // ↪ U+003E GREATER-THAN SIGN (>)
 // ↪ EOF
-// Reconsume p1093 in the after attribute name state p1105.
+// Reconsume in the after attribute name state.
 // ↪ U+003D EQUALS SIGN (=)
-// Switch to the before attribute value state p1105.
+// Switch to the before attribute value state.
 // ↪ ASCII upper alpha
-// Append the lowercase version of the current input character p1088 (add 0x0020 to the character's code point) to the current
+// Append the lowercase version of the current input character (add 0x0020 to the character's code point) to the current
 // attribute's name.
 // ↪ U+0000 NULL
-// This is an unexpected-null-character p1081 parse error p1077. Append a U+FFFD REPLACEMENT CHARACTER character to the current
+// This is an unexpected-null-character parse error. Append a U+FFFD REPLACEMENT CHARACTER character to the current
 // attribute's name.
 // ↪ U+0022 QUOTATION MARK (")
 // ↪ U+0027 APOSTROPHE (')
 // ↪ U+003C LESS-THAN SIGN (<)
-// This is an unexpected-character-in-attribute-name p1080 parse errorp1077. Treat it as per the "anything else" entry below.
+// This is an unexpected-character-in-attribute-name parse error. Treat it as per the "anything else" entry below.
 // ↪ Anything else
-// Append the current input character p1088 to the current attribute's name.
+// Append the current input character to the current attribute's name.
 // When the user agent leaves the attribute name state (and before emitting the tag token, if appropriate), the complete attribute's name
 // must be compared to the other attributes on the same token; if there is already an attribute on the token with the exact same name,
-// then this is a duplicate-attribute p1077 parse error p1077 and the new attribute must be removed from the token.
+// then this is a duplicate-attribute parse error and the new attribute must be removed from the token.
 
 // NOTE: If an attribute is so removed from a token, it, and the value that gets associated with it, if any, are never subsequently used by the
 // parser, and are therefore effectively discarded. Removing the attribute in this way does not change its status as the "current

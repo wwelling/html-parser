@@ -1,17 +1,20 @@
 import { AbstractState } from "./abstract-state";
 
 // 12.2.5.80 Numeric character reference end state
-// Check the character reference code p1119:
-// • If the number is 0x00, then this is a null-character-reference p1080 parse error p1077. Set the character reference code p1119 to
+
+// Check the character reference code:
+// • If the number is 0x00, then this is a null-character-reference parse error. Set the character reference code to
 // 0xFFFD.
-// • If the number is greater than 0x10FFFF, then this is a character-reference-outside-unicode-range p1077 parse error p1077. Set the
-// character reference code p1119 to 0xFFFD.
-// • If the number is a surrogate, then this is a surrogate-character-reference p1080 parse error p1077. Set the character reference
+// • If the number is greater than 0x10FFFF, then this is a character-reference-outside-unicode-range parse error. Set the
+// character reference code to 0xFFFD.
+// • If the number is a surrogate, then this is a surrogate-character-reference parse error. Set the character reference
 // codep1119 to 0xFFFD.
-// • If the number is a noncharacter, then this is a noncharacter-character-reference p1079 parse error p1077.
-// • If the number is 0x0D, or a control that's not ASCII whitespace, then this is a control-character-reference p1077 parse error p1077.
+// • If the number is a noncharacter, then this is a noncharacter-character-reference parse error.
+// • If the number is 0x0D, or a control that's not ASCII whitespace, then this is a control-character-reference parse error.
+
 // If the number is one of the numbers in the first column of the following table, then find the row with that number in the first
-// column, and set the character reference code p1119 to the number in the second column of that row.
+// column, and set the character reference code to the number in the second column of that row.
+
 // Number Code point
 // 0x80 0x20AC EURO SIGN (€)
 // 0x82 0x201A SINGLE LOW-9 QUOTATION MARK (‚)
@@ -40,8 +43,9 @@ import { AbstractState } from "./abstract-state";
 // 0x9C 0x0153 LATIN SMALL LIGATURE OE (œ)
 // 0x9E 0x017E LATIN SMALL LETTER Z WITH CARON (ž)
 // 0x9F 0x0178 LATIN CAPITAL LETTER Y WITH DIAERESIS (Ÿ)
-// Set the temporary buffer p1093 to the empty string. Append a code point equal to the character reference code p1119 to the temporary
-// buffer p1093. Flush code points consumed as a character reference p1093. Switch to the return state p1093.
+
+// Set the temporary buffer to the empty string. Append a code point equal to the character reference code to the temporary
+// buffer. Flush code points consumed as a character reference. Switch to the return state.
 export class NumericCharacterReferenceEndState extends AbstractState {
   consume(character: string): void {
     switch (character) {

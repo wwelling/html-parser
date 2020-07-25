@@ -32,7 +32,7 @@ export default class Tokenizer {
         this.returnState = returnState;
       },
       onEmit: (character: string) => {
-        // 
+        console.log(character);
       }
     });
 

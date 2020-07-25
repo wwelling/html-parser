@@ -1,11 +1,11 @@
 import { AbstractState } from "./abstract-state";
 
 // 12.2.5.68 Bogus DOCTYPE state
-// Consume the next input character p1088:
+// Consume the next input character:
 // ↪ U+003E GREATER-THAN SIGN (>)
-// Switch to the data state p1094. Emit the DOCTYPE token.
+// Switch to the data state. Emit the DOCTYPE token.
 // ↪ U+0000 NULL
-// This is an unexpected-null-character p1081 parse error p1077. Ignore the character.
+// This is an unexpected-null-character parse error. Ignore the character.
 // ↪ EOF
 // Emit the DOCTYPE token. Emit an end-of-file token.
 // ↪ Anything else
