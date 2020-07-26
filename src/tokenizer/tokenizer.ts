@@ -1,5 +1,9 @@
 import { getStates, State, States } from "./state";
-import Token from "./token";
+import { CharacterToken } from "./token/character-token";
+import { CommentToken } from "./token/comment-token";
+import { DOCTYPEToken } from "./token/doctype-token";
+import { EndTagToken } from "./token/end-tag-token";
+import { StartTagToken } from "./token/start-tag-token";
 import { TokenizerCallbacks } from "./tokenizer-callbacks";
 
 export default class Tokenizer {
@@ -22,6 +26,16 @@ export default class Tokenizer {
 
   done: boolean;
 
+  characterToken: CharacterToken;
+
+  commentToken: CommentToken;
+
+  doctypeToken: DOCTYPEToken;
+
+  endTagToken: EndTagToken;
+
+  startTagToken: StartTagToken;
+
   constructor(callbacks: TokenizerCallbacks) {
 
     this.states = getStates({
@@ -31,8 +45,29 @@ export default class Tokenizer {
       setReturnState: (returnState: State) => {
         this.returnState = returnState;
       },
-      emit: (token: Token) => {
-        // console.log(token);
+      emitCharacterToken: (token: CharacterToken) => {
+        //
+      },
+      emitCommentToken: (token: CommentToken) => {
+        //
+      },
+      emitDOCTYPEToken: (token: DOCTYPEToken) => {
+        //
+      },
+      emitEndOfFileToken: () => {
+        //
+      },
+      emitEndTagToken: (token: EndTagToken) => {
+        //
+      },
+      emitStartTagToken: (token: StartTagToken) => {
+        //
+      },
+      reconsume: (state: State) => {
+        if (state) {
+          this.state = state;
+        }
+        this.index--;
       }
     });
 

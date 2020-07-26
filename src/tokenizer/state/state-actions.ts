@@ -1,8 +1,14 @@
 import { State } from ".";
-import Token from "../token";
+import { CharacterToken, CommentToken, DOCTYPEToken, EndTagToken, StartTagToken } from "../token";
 
 export interface StateActions {
   switchState: (state: State) => void;
   setReturnState: (returnState: State) => void;
-  emit: (token: Token) => void;
+  emitCharacterToken: (token: CharacterToken) => void;
+  emitCommentToken: (token: CommentToken) => void;
+  emitDOCTYPEToken: (token: DOCTYPEToken) => void;
+  emitEndOfFileToken: () => void;
+  emitEndTagToken: (token: EndTagToken) => void;
+  emitStartTagToken: (token: StartTagToken) => void;
+  reconsume: (state?: State) => void;
 }

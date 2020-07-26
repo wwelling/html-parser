@@ -1,5 +1,5 @@
-import { AbstractState } from "./abstract-state";
 import { Characters } from "../characters";
+import { AbstractState } from "./abstract-state";
 
 // 12.2.5.6 Tag open state
 // Consume the next input character:
@@ -21,6 +21,13 @@ export class TagOpenState extends AbstractState {
   consume(character: string): void {
     switch (character) {
       case Characters.ExclamationMark:
+        this.switchState(this.states.markupDeclarationOpenState);
+        break;
+      case Characters.Solidus:
+        this.switchState(this.states.endTagOpenState);
+        break;
+      case Characters.QuestionMark:
+
         break;
       default:
         break;

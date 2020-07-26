@@ -19,9 +19,6 @@ switch (test) {
             for (let i = 0; i < attempts; i++) {
               console.time(file);
               new Tokenizer({
-                onEmit: () => {
-                  //
-                },
                 onEnd: () => {
                   console.timeEnd(file);
                 }
