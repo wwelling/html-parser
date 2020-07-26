@@ -1,8 +1,11 @@
-import { StateCallbacks } from "./state-callbacks";
+import { StateActions } from "./state-actions";
+import { States } from ".";
 
 export interface State {
 
-  callbacks: StateCallbacks;
+  states: States;
+
+  actions: StateActions;
 
   consume(character: string): void;
 

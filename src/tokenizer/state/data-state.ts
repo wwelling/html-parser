@@ -1,5 +1,6 @@
-import { characters } from "../characters";
+import { Characters } from "../characters";
 import { AbstractState } from "./abstract-state";
+import TokenType from "../token-type";
 
 // 12.2.5.1 Data state
 // Consume the next input character:
@@ -16,12 +17,22 @@ import { AbstractState } from "./abstract-state";
 export class DataState extends AbstractState {
   consume(character: string): void {
     switch (character) {
-      case characters.ampersand:
+      case Characters.Ampersand:
+        this.setReturnState(this.states.dataState);
+        this.switchState(this.states.characterReferenceState);
         break;
-      case characters.lessThanSign:
+      case Characters.LessThanSign:
+        this.switchState(this.states.tagOpenState);
         break;
-      case characters.nullCharacter: // This is an unexpected-null-character parse error
+      case null:
+        this.emit({ value: character, type: TokenType.EOF });
+        break;
+      case Characters.NullCharacter: // This is an unexpected-null-character parse error
+        console.warn('Unexpected-null-character parse error');
+        this.emit({ value: character, type: TokenType.Character });
+        break;
       default:
+        this.emit({ value: character, type: TokenType.Character });
         break;
     }
   }

@@ -1,25 +1,25 @@
-const characters: { [name: string]: string } = {
-  nullCharacter: '\u0000',       //
-  characterTabulation: '\u0009', //
-  lineFeed: '\u000A',            //
-  formFeed: '\u000C',            //
-  space: '\u0020',               // ' '
-  exclamationMark: '\u0021',     // '!'
-  quotationMark: '\u0022',       // '"'
-  numberSign: '\u0023',          // '#'
-  apostrophe: '\u0027',          // '''
-  ampersand: '\u0026',           // '&'
-  hyphenMinu: '\u002D',          // '-'
-  solidus: '\u002F',             // '/'
-  semiColon: '\u003B',           // ';'
-  lessThanSign: '\u003C',        // '<'
-  equalsSign: '\u003D',          // '='
-  greaterThanSign: '\u003E',     // '>'
-  questionMark: '\u003F',        // '?'
-  latinCapitalLetterX: '\u0058', // 
-  rightSquareBracket: '\u005D',  // ']'
-  graveAccent: '\u0060',         // '`'
-  latinSmallLetterX: '\u0078',   //
+enum Characters {
+  NullCharacter = '\u0000',       //
+  CharacterTabulation = '\u0009', //
+  LineFeed = '\u000A',            //
+  FormFeed = '\u000C',            //
+  Space = '\u0020',               // ' '
+  ExclamationMark = '\u0021',     // '!'
+  QuotationMark = '\u0022',       // '"'
+  NumberSign = '\u0023',          // '#'
+  Apostrophe = '\u0027',          // '''
+  Ampersand = '\u0026',           // '&'
+  HyphenMinus = '\u002D',         // '-'
+  Solidus = '\u002F',             // '/'
+  SemiColon = '\u003B',           // ';'
+  LessThanSign = '\u003C',        // '<'
+  EqualsSign = '\u003D',          // '='
+  GreaterThanSign = '\u003E',     // '>'
+  QuestionMark = '\u003F',        // '?'
+  LatinCapitalLetterX = '\u0058', // 
+  RightSquareBracket = '\u005D',  // ']'
+  GraveAccent = '\u0060',         // '`'
+  LatinSmallLetterX = '\u0078',   //
 }
 
 const isASCIICaseInsensitiveMatch = (value: string, match: string): boolean => {
@@ -86,7 +86,7 @@ const toCharCode = (character: string): number => {
 }
 
 export {
-  characters,
+  Characters,
   isASCIIAlpha,
   isASCIIUpperAlpha,
   isASCIILowerAlpha,

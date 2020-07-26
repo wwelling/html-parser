@@ -1,10 +1,10 @@
+import { getStates, State, States } from "./state";
+import Token from "./token";
 import { TokenizerCallbacks } from "./tokenizer-callbacks";
-import { State } from "./state";
-import { getStates } from "./state";
 
 export default class Tokenizer {
 
-  states: { [name: string]: State };
+  states: States;
 
   callbacks: TokenizerCallbacks;
 
@@ -25,14 +25,14 @@ export default class Tokenizer {
   constructor(callbacks: TokenizerCallbacks) {
 
     this.states = getStates({
-      onStateChange: (state: State) => {
+      switchState: (state: State) => {
         this.state = state;
       },
-      onReturnStateChange: (returnState: State) => {
+      setReturnState: (returnState: State) => {
         this.returnState = returnState;
       },
-      onEmit: (character: string) => {
-        console.log(character);
+      emit: (token: Token) => {
+        // console.log(token);
       }
     });
 

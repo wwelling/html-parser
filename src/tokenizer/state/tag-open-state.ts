@@ -1,9 +1,10 @@
 import { AbstractState } from "./abstract-state";
+import { Characters } from "../characters";
 
 // 12.2.5.6 Tag open state
 // Consume the next input character:
 // ↪ U+0021 EXCLAMATION MARK (!)
-// Switch to the markup declaration open state p1108.
+// Switch to the markup declaration open state.
 // ↪ U+002F SOLIDUS (/)
 // Switch to the end tag open state.
 // ↪ ASCII alpha
@@ -19,6 +20,8 @@ import { AbstractState } from "./abstract-state";
 export class TagOpenState extends AbstractState {
   consume(character: string): void {
     switch (character) {
+      case Characters.ExclamationMark:
+        break;
       default:
         break;
     }
