@@ -1,6 +1,5 @@
 import { AbstractState } from "./abstract-state";
 import { isASCIIAlpha, Characters } from "../characters";
-import { threadId } from "worker_threads";
 
 // 12.2.5.6 Tag open state
 // Consume the next input character:
