@@ -21,6 +21,26 @@ export abstract class AbstractState {
     this.actions.setReturnState(returnState);
   }
 
+  createCharacterToken(data: string): void {
+    this.actions.createCharacterToken(data);
+  }
+
+  createCommentToken(data: string): void {
+    this.actions.createCommentToken(data);
+  }
+
+  createDOCTYPEToken(): void {
+    this.actions.createDOCTYPEToken();
+  }
+
+  createEndTagToken(name: string): void {
+    this.actions.createEndTagToken(name);
+  }
+
+  createStartTagToken(name: string): void {
+    this.actions.createStartTagToken(name);
+  }
+
   emitCharacterToken(token: CharacterToken): void {
     this.actions.emitCharacterToken(token);
   }
@@ -43,6 +63,26 @@ export abstract class AbstractState {
 
   emitStartTagToken(token: StartTagToken): void {
     this.actions.emitStartTagToken(token);
+  }
+
+  setTemporaryBuffer(data: string): void {
+    this.actions.setTemporaryBuffer(data);
+  }
+
+  appendToTemporaryBuffer(data: string): void {
+    this.actions.appendToTemporaryBuffer(data);
+  }
+
+  reconsume(character: string, state?: State): void {
+    this.actions.reconsume(character, state);
+  }
+
+  reconsumeInReturnState(character: string): void {
+    this.actions.reconsumeInReturnState(character);
+  }
+
+  flushCodePoints(): void {
+    this.flushCodePoints();
   }
 
 }

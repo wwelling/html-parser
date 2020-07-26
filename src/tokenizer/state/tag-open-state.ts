@@ -1,5 +1,6 @@
-import { Characters } from "../characters";
 import { AbstractState } from "./abstract-state";
+import { isASCIIAlpha, Characters } from "../characters";
+import { threadId } from "worker_threads";
 
 // 12.2.5.6 Tag open state
 // Consume the next input character:
@@ -27,9 +28,24 @@ export class TagOpenState extends AbstractState {
         this.switchState(this.states.endTagOpenState);
         break;
       case Characters.QuestionMark:
-
+        console.warn('unexpected-question-mark-instead-of-tag-name parse error');
+        this.createCommentToken('');
+        this.reconsume(character, this.states.bogusCommentState);
+        break;
+      case null:
+        console.warn('eof-before-tag-name parse error');
+        this.emitCharacterToken({ data: Characters.LessThanSign });
+        this.emitEndOfFileToken();
         break;
       default:
+        if (isASCIIAlpha(character)) {
+          this.createStartTagToken('');
+          this.reconsume(character, this.states.tagNameState);
+        } else {
+          console.warn('invalid-first-character-of-tag-name');
+          this.emitCharacterToken({ data: Characters.LessThanSign });
+          this.reconsume(character, this.states.dataState);
+        }
         break;
     }
   }

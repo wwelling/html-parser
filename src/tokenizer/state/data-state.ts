@@ -27,7 +27,7 @@ export class DataState extends AbstractState {
         this.emitEndOfFileToken();
         break;
       case Characters.NullCharacter:
-        console.warn('Unexpected-null-character parse error');
+        console.warn('unexpected-null-character parse error');
         this.emitCharacterToken({ data: character });
         break;
       default:

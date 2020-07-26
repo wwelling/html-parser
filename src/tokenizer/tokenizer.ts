@@ -45,6 +45,21 @@ export default class Tokenizer {
       setReturnState: (returnState: State) => {
         this.returnState = returnState;
       },
+      createCharacterToken: (data: string) => {
+        this.characterToken = { data };
+      },
+      createCommentToken: (data: string) => {
+        this.commentToken = { data };
+      },
+      createDOCTYPEToken: () => {
+        this.doctypeToken = { forceQuirksFlag: 'off' };
+      },
+      createEndTagToken: (name: string) => {
+        this.endTagToken = { name };
+      },
+      createStartTagToken: (name: string) => {
+        this.startTagToken = { name, attributes: {}, selfClosingFlag: 'unset' };
+      },
       emitCharacterToken: (token: CharacterToken) => {
         //
       },
@@ -63,11 +78,26 @@ export default class Tokenizer {
       emitStartTagToken: (token: StartTagToken) => {
         //
       },
-      reconsume: (state: State) => {
+      setTemporaryBuffer: (data: string) => {
+        this.temporaryBuffer = data;
+      },
+      appendToTemporaryBuffer: (data: string) => {
+        this.temporaryBuffer += data;
+      },
+      reconsume: (character: string, state: State) => {
         if (state) {
-          this.state = state;
+          state.consume(character);
+        } else {
+          this.state.consume(character);
         }
-        this.index--;
+      },
+      reconsumeInReturnState: (character: string) => {
+        this.returnState.consume(character);
+      },
+      flushCodePoints: () => {
+        // When a state says to flush code points consumed as a character reference, it means that for each code point in the temporary buffer (in the order they were added to the buffer)
+        // user agent must append the code point from the buffer to the current attribute's value if the character reference was consumed as part of an attribute, or emit the code point as a
+        // character token otherwise.
       }
     });
 
