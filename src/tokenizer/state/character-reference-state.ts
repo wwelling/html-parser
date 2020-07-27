@@ -1,5 +1,5 @@
+import { Characters, isASCIIAlphanumeric } from "../characters";
 import { AbstractState } from "./abstract-state";
-import { isASCIIAlphanumeric, Characters } from "../characters";
 
 // 12.2.5.72 Character reference state
 // Set the temporary buffer to the empty string. Append a U+0026 AMPERSAND (&) character to the temporary buffer.

@@ -1,5 +1,5 @@
+import { Characters, isASCIIAlpha } from "../characters";
 import { AbstractState } from "./abstract-state";
-import { isASCIIAlpha, Characters } from "../characters";
 
 // 12.2.5.6 Tag open state
 // Consume the next input character:

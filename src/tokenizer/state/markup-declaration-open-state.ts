@@ -4,7 +4,7 @@ import { AbstractState } from "./abstract-state";
 // If the next few characters are:
 // ↪ Two U+002D HYPHEN-MINUS characters (-)
 // Consume those two characters, create a comment token whose data is the empty string, and switch to the comment start
-// statep1108.
+// state.
 // ↪ ASCII case-insensitive match for the word "DOCTYPE"
 // Consume those characters and switch to the DOCTYPE state.
 // ↪ The string "[CDATA[" (the five uppercase letters "CDATA" with a U+005B LEFT SQUARE BRACKET character before
