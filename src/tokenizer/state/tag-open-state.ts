@@ -21,15 +21,15 @@ export class TagOpenState extends AbstractState {
   consume(character: string): void {
     switch (character) {
       case Characters.ExclamationMark:
-        this.switchState(this.states.markupDeclarationOpenState);
+        this.switchState(this.markupDeclarationOpenState);
         break;
       case Characters.Solidus:
-        this.switchState(this.states.endTagOpenState);
+        this.switchState(this.endTagOpenState);
         break;
       case Characters.QuestionMark:
         console.warn('unexpected-question-mark-instead-of-tag-name parse error');
         this.createCommentToken('');
-        this.reconsume(character, this.states.bogusCommentState);
+        this.reconsume(character, this.bogusCommentState);
         break;
       case null:
         console.warn('eof-before-tag-name parse error');
@@ -39,11 +39,11 @@ export class TagOpenState extends AbstractState {
       default:
         if (isASCIIAlpha(character)) {
           this.createStartTagToken('');
-          this.reconsume(character, this.states.tagNameState);
+          this.reconsume(character, this.tagNameState);
         } else {
           console.warn('invalid-first-character-of-tag-name');
           this.emitCharacterToken({ data: Characters.LessThanSign });
-          this.reconsume(character, this.states.dataState);
+          this.reconsume(character, this.dataState);
         }
         break;
     }

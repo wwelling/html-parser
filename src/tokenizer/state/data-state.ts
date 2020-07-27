@@ -17,11 +17,11 @@ export class DataState extends AbstractState {
   consume(character: string): void {
     switch (character) {
       case Characters.Ampersand:
-        this.setReturnState(this.states.dataState);
-        this.switchState(this.states.characterReferenceState);
+        this.setReturnState(this.dataState);
+        this.switchState(this.characterReferenceState);
         break;
       case Characters.LessThanSign:
-        this.switchState(this.states.tagOpenState);
+        this.switchState(this.tagOpenState);
         break;
       case null:
         this.emitEndOfFileToken();

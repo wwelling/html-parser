@@ -15,10 +15,10 @@ export class CharacterReferenceState extends AbstractState {
     this.setTemporaryBuffer('');
     this.appendToTemporaryBuffer(Characters.Ampersand);
     if (isASCIIAlphanumeric(character)) {
-      this.reconsume(character, this.states.namedCharacterReferenceState);
+      this.reconsume(character, this.namedCharacterReferenceState);
     } else if (character === Characters.NumberSign) {
       this.appendToTemporaryBuffer(character);
-      this.switchState(this.states.numericCharacterReferenceState);
+      this.switchState(this.numericCharacterReferenceState);
     } else {
       this.flushCodePoints();
       this.reconsumeInReturnState(character);

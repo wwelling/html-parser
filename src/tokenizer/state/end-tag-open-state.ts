@@ -1,4 +1,5 @@
 import { AbstractState } from "./abstract-state";
+import { isASCIIAlpha, Characters } from "../characters";
 
 // 12.2.5.7 End tag open state
 // Consume the next input character:
@@ -14,9 +15,14 @@ import { AbstractState } from "./abstract-state";
 // Reconsume in the bogus comment state.
 export class EndTagOpenState extends AbstractState {
   consume(character: string): void {
-    switch (character) {
-      default:
-        break;
+    if (isASCIIAlpha(character)) {
+
+    } else if (character === Characters.GreaterThanSign) {
+
+    } else if (character === null) {
+
+    } else {
+
     }
   }
 }
