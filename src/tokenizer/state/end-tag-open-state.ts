@@ -16,13 +16,20 @@ import { isASCIIAlpha, Characters } from "../characters";
 export class EndTagOpenState extends AbstractState {
   consume(character: string): void {
     if (isASCIIAlpha(character)) {
-
+      this.createEndTagToken('');
+      this.reconsume(character, this.tagNameState);
     } else if (character === Characters.GreaterThanSign) {
-
+      console.warn('missing-end-tag-name parse parse error');
+      this.switchState(this.dataState);
     } else if (character === null) {
-
+      console.warn('eof-before-tag-name parse error');
+      this.emitCharacterToken({ data: Characters.LessThanSign });
+      this.emitCharacterToken({ data: Characters.Solidus });
+      this.emitEndOfFileToken();
     } else {
-
+      console.warn('invalid-first-character-of-tag-name parse error');
+      this.createCommentToken('');
+      this.reconsume(character, this.bogusCommentState);
     }
   }
 }
