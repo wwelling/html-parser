@@ -19,33 +19,25 @@ import { AbstractState } from "./abstract-state";
 // Reconsume in the data state.
 export class TagOpenState extends AbstractState {
   consume(character: string): void {
-    switch (character) {
-      case Characters.ExclamationMark:
-        this.switchState(this.markupDeclarationOpenState);
-        break;
-      case Characters.Solidus:
-        this.switchState(this.endTagOpenState);
-        break;
-      case Characters.QuestionMark:
-        console.warn('unexpected-question-mark-instead-of-tag-name parse error');
-        this.createCommentToken('');
-        this.reconsume(character, this.bogusCommentState);
-        break;
-      case null:
-        console.warn('eof-before-tag-name parse error');
-        this.emitCharacterToken({ data: Characters.LessThanSign });
-        this.emitEndOfFileToken();
-        break;
-      default:
-        if (isASCIIAlpha(character)) {
-          this.createStartTagToken('');
-          this.reconsume(character, this.tagNameState);
-        } else {
-          console.warn('invalid-first-character-of-tag-name');
-          this.emitCharacterToken({ data: Characters.LessThanSign });
-          this.reconsume(character, this.dataState);
-        }
-        break;
+    if (character === Characters.ExclamationMark) {
+      this.switchState(this.markupDeclarationOpenState);
+    } else if (character === Characters.Solidus) {
+      this.switchState(this.endTagOpenState);
+    } else if (isASCIIAlpha(character)) {
+      this.createStartTagToken('');
+      this.reconsume(character, this.tagNameState);
+    } else if (character === Characters.QuestionMark) {
+      console.warn('unexpected-question-mark-instead-of-tag-name parse error');
+      this.createCommentToken('');
+      this.reconsume(character, this.bogusCommentState);
+    } else if (character === null) {
+      console.warn('eof-before-tag-name parse error');
+      this.emitCharacterToken({ data: Characters.LessThanSign });
+      this.emitEndOfFileToken();
+    } else {
+      console.warn('invalid-first-character-of-tag-name');
+      this.emitCharacterToken({ data: Characters.LessThanSign });
+      this.reconsume(character, this.dataState);
     }
   }
 }
