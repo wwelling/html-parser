@@ -17,7 +17,8 @@ export interface StateActions {
   emitStartTagToken: (token: StartTagToken) => void;
   setTemporaryBuffer: (data: string) => void;
   appendToTemporaryBuffer: (data: string) => void;
-  reconsume: (character: string, state?: State) => void;
+  reconsumeInState: (character: string, state?: State) => void;
   reconsumeInReturnState: (character: string) => void;
+  setCharacterReferenceCode: (code: number) => void;
   flushCodePoints: () => void;
 }

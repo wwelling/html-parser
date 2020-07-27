@@ -25,11 +25,11 @@ export class TagOpenState extends AbstractState {
       this.switchState(this.endTagOpenState);
     } else if (isASCIIAlpha(character)) {
       this.createStartTagToken('');
-      this.reconsume(character, this.tagNameState);
+      this.reconsumeInState(character, this.tagNameState);
     } else if (character === Characters.QuestionMark) {
       console.warn('unexpected-question-mark-instead-of-tag-name parse error');
       this.createCommentToken('');
-      this.reconsume(character, this.bogusCommentState);
+      this.reconsumeInState(character, this.bogusCommentState);
     } else if (character === null) {
       console.warn('eof-before-tag-name parse error');
       this.emitCharacterToken({ data: Characters.LessThanSign });
@@ -37,7 +37,7 @@ export class TagOpenState extends AbstractState {
     } else {
       console.warn('invalid-first-character-of-tag-name');
       this.emitCharacterToken({ data: Characters.LessThanSign });
-      this.reconsume(character, this.dataState);
+      this.reconsumeInState(character, this.dataState);
     }
   }
 }

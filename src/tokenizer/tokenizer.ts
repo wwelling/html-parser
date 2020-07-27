@@ -1,3 +1,4 @@
+import { Buffer } from "./buffer";
 import { getStates, State, States } from "./state";
 import { CharacterToken } from "./token/character-token";
 import { CommentToken } from "./token/comment-token";
@@ -8,19 +9,19 @@ import { TokenizerCallbacks } from "./tokenizer-callbacks";
 
 export default class Tokenizer {
 
-  states: States;
-
   callbacks: TokenizerCallbacks;
+
+  buffer: Buffer;
+
+  states: States;
 
   state: State;
 
   returnState: State;
 
-  buffer: string;
-
-  index: number;
-
   temporaryBuffer: string;
+
+  characterReferenceCode: number;
 
   running: boolean;
 
@@ -37,8 +38,10 @@ export default class Tokenizer {
   startTagToken: StartTagToken;
 
   constructor(callbacks: TokenizerCallbacks) {
+    this.callbacks = callbacks;
+    this.buffer = new Buffer();
 
-    this.states = getStates({
+    this.states = getStates(this.buffer, {
       switchState: (state: State) => {
         this.state = state;
       },
@@ -84,15 +87,16 @@ export default class Tokenizer {
       appendToTemporaryBuffer: (data: string) => {
         this.temporaryBuffer += data;
       },
-      reconsume: (character: string, state: State) => {
-        if (state) {
-          state.consume(character);
-        } else {
-          this.state.consume(character);
-        }
+      reconsumeInState: (character: string, state: State) => {
+        this.state = state;
+        this.state.consume(character);
       },
       reconsumeInReturnState: (character: string) => {
-        this.returnState.consume(character);
+        this.state = this.returnState;
+        this.state.consume(character);
+      },
+      setCharacterReferenceCode: (characterReferenceCode: number) => {
+        this.characterReferenceCode = characterReferenceCode;
       },
       flushCodePoints: () => {
         // When a state says to flush code points consumed as a character reference, it means that for each code point in the temporary buffer (in the order they were added to the buffer)
@@ -101,24 +105,20 @@ export default class Tokenizer {
       }
     });
 
-    this.callbacks = callbacks;
     this.state = this.states.dataState;
-    this.buffer = '';
-    this.index = 0;
     this.temporaryBuffer = '';
     this.running = true;
     this.done = false;
   }
 
   write(chunk: string): void {
-    this.buffer += chunk;
+    this.buffer.write(chunk);
     this.parse();
   }
 
   parse(): void {
-    while (this.index < this.buffer.length && this.running) {
-      const character = this.buffer.charAt(this.index++);
-      this.state.consume(character);
+    while (this.buffer.hasData() && this.running) {
+      this.state.consume(this.buffer.next());
     }
   }
 
@@ -128,7 +128,7 @@ export default class Tokenizer {
 
   resume(): void {
     this.running = true;
-    if (this.index < this.buffer.length) {
+    if (this.buffer.hasData()) {
       this.parse();
     }
     if (this.done) {

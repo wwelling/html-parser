@@ -83,6 +83,9 @@ import {
   TagOpenState
 } from ".";
 import {
+  Buffer
+} from "../buffer";
+import {
   StateActions
 } from "./state-actions";
 import {
@@ -95,11 +98,14 @@ import {
 
 export abstract class AbstractState implements State {
 
+  buffer: Buffer;
+
   private states: States;
 
   private actions: StateActions;
 
-  constructor(states: States, actions: StateActions) {
+  constructor(buffer: Buffer, states: States, actions: StateActions) {
+    this.buffer = buffer;
     this.states = states;
     this.actions = actions;
   }
@@ -166,16 +172,20 @@ export abstract class AbstractState implements State {
     this.actions.appendToTemporaryBuffer(data);
   }
 
-  reconsume(character: string, state?: State): void {
-    this.actions.reconsume(character, state);
+  reconsumeInState(character: string, state: State): void {
+    this.actions.reconsumeInState(character, state);
   }
 
   reconsumeInReturnState(character: string): void {
     this.actions.reconsumeInReturnState(character);
   }
 
+  setCharacterReferenceCode(characterReferenceCode: number): void {
+    this.actions.setCharacterReferenceCode(characterReferenceCode);
+  }
+
   flushCodePoints(): void {
-    this.flushCodePoints();
+    this.actions.flushCodePoints();
   }
 
   get dataState(): DataState {

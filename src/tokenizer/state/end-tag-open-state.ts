@@ -17,7 +17,7 @@ export class EndTagOpenState extends AbstractState {
   consume(character: string): void {
     if (isASCIIAlpha(character)) {
       this.createEndTagToken('');
-      this.reconsume(character, this.tagNameState);
+      this.reconsumeInState(character, this.tagNameState);
     } else if (character === Characters.GreaterThanSign) {
       console.warn('missing-end-tag-name parse parse error');
       this.switchState(this.dataState);
@@ -29,7 +29,7 @@ export class EndTagOpenState extends AbstractState {
     } else {
       console.warn('invalid-first-character-of-tag-name parse error');
       this.createCommentToken('');
-      this.reconsume(character, this.bogusCommentState);
+      this.reconsumeInState(character, this.bogusCommentState);
     }
   }
 }
