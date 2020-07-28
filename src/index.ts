@@ -1,6 +1,6 @@
 import fs from 'fs';
 import Reader from './reader';
-import { CharacterToken, CommentToken, DOCTYPEToken, EndTagToken, StartTagToken } from './tokenizer/token';
+import { EndTagToken, StartTagToken } from './tokenizer/token';
 import Tokenizer from './tokenizer/tokenizer';
 
 const reader = new Reader();
@@ -20,19 +20,19 @@ switch (test) {
             for (let i = 0; i < attempts; i++) {
               console.time(file);
               new Tokenizer({
-                emitCharacterToken: (token: CharacterToken) => {
+                emitCharacterToken: () => {
                   //
                 },
-                emitCommentToken: (token: CommentToken) => {
+                emitCommentToken: () => {
                   //
                 },
-                emitDOCTYPEToken: (token: DOCTYPEToken) => {
+                emitDOCTYPEToken: () => {
                   //
                 },
-                emitStartTagToken: (token: StartTagToken) => {
+                emitStartTagToken: () => {
                   //
                 },
-                emitEndTagToken: (token: EndTagToken) => {
+                emitEndTagToken: () => {
                   //
                 },
                 emitEndOfFileToken: () => {
@@ -46,6 +46,37 @@ switch (test) {
           }).catch(console.error);
       });
     });
+    break;
+  case 2:
+    reader.read(`htmlparser-benchmark/files/fff65493446424d4b8d49bd1027a851bdd685a75bd11a324897ebe836b3ebb85.html`)
+      .then((data: string) => {
+        for (let i = 0; i < attempts; i++) {
+          console.time('fff65493446424d4b8d49bd1027a851bdd685a75bd11a324897ebe836b3ebb85.html');
+          new Tokenizer({
+            emitCharacterToken: () => {
+              //
+            },
+            emitCommentToken: () => {
+              //
+            },
+            emitDOCTYPEToken: () => {
+              //
+            },
+            emitStartTagToken: () => {
+              //
+            },
+            emitEndTagToken: () => {
+              //
+            },
+            emitEndOfFileToken: () => {
+              //
+            },
+            onEnd: () => {
+              console.timeEnd('fff65493446424d4b8d49bd1027a851bdd685a75bd11a324897ebe836b3ebb85.html');
+            }
+          }).end(data);
+        }
+      }).catch(console.error);
     break;
   default:
     break;

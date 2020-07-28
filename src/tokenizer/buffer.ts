@@ -23,8 +23,13 @@ export class Buffer {
 
   // look ahead includes the current character
   lookAhead(numberOfCharacters: number): string {
-    if (this.index + numberOfCharacters - 1 < this.data.length) {
-      return this.data.substr(this.index - 1, numberOfCharacters);
+    const endIndex = this.index + numberOfCharacters - 1;
+    if (endIndex < this.data.length) {
+      let word = '';
+      for (let i = this.index - 1; i < endIndex; i++) {
+        word += this.data[i];
+      }
+      return word;
     }
   }
 

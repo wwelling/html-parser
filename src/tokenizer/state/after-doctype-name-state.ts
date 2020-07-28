@@ -1,5 +1,5 @@
-import { AbstractState } from "./abstract-state";
 import { Characters, isASCIICaseInsensitiveMatch } from "../characters";
+import { AbstractState } from "./abstract-state";
 
 // 12.2.5.56 After DOCTYPE name state
 // Consume the next input character:
@@ -38,18 +38,22 @@ export class AfterDOCTYPENameState extends AbstractState {
         this.setDOCTYPETokenForceQuirks('on');
         this.emitDOCTYPEToken();
         break;
-      default:
+      default: {
         const word = this.buffer.lookAhead(6);
+        console.log(word);
         if (isASCIICaseInsensitiveMatch(word, 'PUBLIC')) {
           this.buffer.fastForward(6);
+          this.switchState(this.afterDOCTYPEPublicKeywordState);
         } else if (isASCIICaseInsensitiveMatch(word, 'SYSTEM')) {
           this.buffer.fastForward(6);
+          this.switchState(this.afterDOCTYPESystemKeywordState);
         } else {
           console.warn('invalid-character-sequence-after-doctype-name parse error');
           this.setDOCTYPETokenForceQuirks('on');
           this.reconsumeInState(character, this.bogusDOCTYPEState);
         }
-        break;
+      } break;
     }
   }
+
 }
