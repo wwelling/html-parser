@@ -1,5 +1,5 @@
-import { AbstractState } from "./abstract-state";
 import { Characters } from "../characters";
+import { AbstractState } from "./abstract-state";
 
 // 12.2.5.34 After attribute name state
 // Consume the next input character:

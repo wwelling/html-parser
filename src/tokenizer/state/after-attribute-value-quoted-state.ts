@@ -1,3 +1,4 @@
+import { Characters } from "../characters";
 import { AbstractState } from "./abstract-state";
 
 // 12.2.5.39 After attribute value (quoted) state
@@ -19,7 +20,27 @@ import { AbstractState } from "./abstract-state";
 export class AfterAttributeValueQuotedState extends AbstractState {
   consume(character: string): void {
     switch (character) {
+      case Characters.CharacterTabulation:
+      case Characters.LineFeed:
+      case Characters.FormFeed:
+      case Characters.Space:
+        this.switchState(this.beforeAttributeNameState);
+        break;
+      case Characters.Solidus:
+        this.switchState(this.selfClosingStartTagState);
+        break;
+      case Characters.GreaterThanSign:
+        this.switchState(this.dataState);
+        // assume start tag token for now
+        this.emitStartTagToken();
+        break;
+      case null:
+        console.warn('eof-in-tag parse error');
+        this.emitEndOfFileToken();
+        break;
       default:
+        console.warn('missing-whitespace-between-attributes parse error');
+        this.reconsumeInState(character, this.attributeNameState);
         break;
     }
   }
