@@ -36,29 +36,29 @@ export class AfterDOCTYPEPublicKeywordState extends AbstractState {
         break;
       case Characters.QuotationMark:
         console.warn('missing-whitespace-after-doctype-public-keyword parse error');
-        this.setDOCTYPETokenPublicIdentifier();
+        this.doctypeToken.publicIdentifier = '';
         this.switchState(this.doctypePublicIdentifierDoubleQuotedState);
         break;
       case Characters.Apostrophe:
         console.warn('missing-whitespace-after-doctype-public-keyword parse error');
-        this.setDOCTYPETokenPublicIdentifier();
+        this.doctypeToken.publicIdentifier = '';
         this.switchState(this.doctypePublicIdentifierSingleQuotedState);
         break;
       case Characters.GreaterThanSign:
         console.warn('missing-doctype-public-identifier error');
-        this.setDOCTYPETokenForceQuirks('on');
+        this.doctypeToken.forceQuirks = 'on';
         this.switchState(this.dataState);
         this.emitDOCTYPEToken();
         break;
       case null:
         console.warn('eof-in-doctype parse error');
-        this.setDOCTYPETokenForceQuirks('on');
+        this.doctypeToken.forceQuirks = 'on';
         this.emitDOCTYPEToken();
         this.emitEndOfFileToken();
         break;
       default:
         console.warn('missing-quote-before-doctype-public-identifier parse error');
-        this.setDOCTYPETokenForceQuirks('on');
+        this.doctypeToken.forceQuirks = 'on';
         this.reconsumeInState(character, this.bogusDOCTYPEState);
         break;
     }

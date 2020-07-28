@@ -37,22 +37,22 @@ export class AfterDOCTYPEPublicIdentifierState extends AbstractState {
         break;
       case Characters.QuotationMark:
         console.warn('missing-whitespace-between-doctype-public-and-system-identifiers parse error');
-        this.setDOCTYPETokenSystemIdentifier();
+        this.doctypeToken.systemIdentifier = '';
         this.switchState(this.doctypeSystemIdentifierDoubleQuotedState);
         break;
       case Characters.Apostrophe:
         console.warn('missing-whitespace-between-doctype-public-and-system-identifiers parse error');
-        this.setDOCTYPETokenSystemIdentifier();
+        this.doctypeToken.systemIdentifier = '';
         this.switchState(this.doctypeSystemIdentifierSingleQuotedState);
         break;
       case null:
         console.warn('eof-in-doctype parse error');
-        this.setDOCTYPETokenForceQuirks('on');
+        this.doctypeToken.forceQuirks = 'on';
         this.emitEndOfFileToken();
         break;
       default:
         console.warn('missing-quote-before-doctype-system-identifier parse error');
-        this.setDOCTYPETokenForceQuirks('on');
+        this.doctypeToken.forceQuirks = 'on';
         this.reconsumeInState(character, this.bogusDOCTYPEState);
         break;
     }

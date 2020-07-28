@@ -1,523 +1,434 @@
-import {
-  AfterAttributeNameState,
-  AfterAttributeValueQuotedState,
-  AfterDOCTYPENameState,
-  AfterDOCTYPEPublicIdentifierState,
-  AfterDOCTYPEPublicKeywordState,
-  AfterDOCTYPESystemIdentifierState,
-  AfterDOCTYPESystemKeywordState,
-  AmbiguousAmpersandState,
-  AttributeNameState,
-  AttributeValueDoubleQuotedState,
-  AttributeValueSingleQuotedState,
-  AttributeValueUnquotedState,
-  BeforeAttributeNameState,
-  BeforeAttributeValueState,
-  BeforeDOCTYPENameState,
-  BeforeDOCTYPEPublicIdentifierState,
-  BeforeDOCTYPESystemIdentifierState,
-  BetweenDOCTYPEPublicAndSystemIdentifiersState,
-  BogusCommentState,
-  BogusDOCTYPEState,
-  CDATASectionBracketState,
-  CDATASectionEndState,
-  CDATASectionState,
-  CharacterReferenceState,
-  CommentEndBangState,
-  CommentEndDashState,
-  CommentEndState,
-  CommentLessThanSignBangDashDashState,
-  CommentLessThanSignBangDashState,
-  CommentLessThanSignBangState,
-  CommentLessThanSignState,
-  CommentStartDashState,
-  CommentStartState,
-  CommentState,
-  DOCTYPENameState,
-  DOCTYPEPublicIdentifierDoubleQuotedState,
-  DOCTYPEPublicIdentifierSingleQuotedState,
-  DOCTYPEState,
-  DOCTYPESystemIdentifierDoubleQuotedState,
-  DOCTYPESystemIdentifierSingleQuotedState,
-  DataState,
-  DecimalCharacterReferenceStartState,
-  DecimalCharacterReferenceState,
-  EndTagOpenState,
-  HexadecimalCharacterReferenceStartState,
-  HexadecimalCharacterReferenceState,
-  MarkupDeclarationOpenState,
-  NamedCharacterReferenceState,
-  NumericCharacterReferenceEndState,
-  NumericCharacterReferenceState,
-  PLAINTEXTState,
-  RAWTEXTEndTagNameState,
-  RAWTEXTEndTagOpenState,
-  RAWTEXTLessThanSignState,
-  RAWTEXTState,
-  RCDATAEndTagNameState,
-  RCDATAEndTagOpenState,
-  RCDATALessThanSignState,
-  RCDATAState,
-  ScriptDataDoubleEscapeEndState,
-  ScriptDataDoubleEscapeStartState,
-  ScriptDataDoubleEscapedDashDashState,
-  ScriptDataDoubleEscapedDashState,
-  ScriptDataDoubleEscapedLessThanSignState,
-  ScriptDataDoubleEscapedState,
-  ScriptDataEndTagNameState,
-  ScriptDataEndTagOpenState,
-  ScriptDataEscapeStartDashState,
-  ScriptDataEscapeStartState,
-  ScriptDataEscapedDashDashState,
-  ScriptDataEscapedDashState,
-  ScriptDataEscapedEndTagNameState,
-  ScriptDataEscapedEndTagOpenState,
-  ScriptDataEscapedLessThanSignState,
-  ScriptDataEscapedState,
-  ScriptDataLessThanSignState,
-  ScriptDataState,
-  SelfClosingStartTagState,
-  State,
-  States,
-  TagNameState,
-  TagOpenState
-} from ".";
-import {
-  Buffer
-} from "../buffer";
-import {
-  StateActions
-} from "./state-actions";
-import {
-  CharacterToken
-} from "../token";
+import { AfterAttributeNameState, AfterAttributeValueQuotedState, AfterDOCTYPENameState, AfterDOCTYPEPublicIdentifierState, AfterDOCTYPEPublicKeywordState, AfterDOCTYPESystemIdentifierState, AfterDOCTYPESystemKeywordState, AmbiguousAmpersandState, AttributeNameState, AttributeValueDoubleQuotedState, AttributeValueSingleQuotedState, AttributeValueUnquotedState, BeforeAttributeNameState, BeforeAttributeValueState, BeforeDOCTYPENameState, BeforeDOCTYPEPublicIdentifierState, BeforeDOCTYPESystemIdentifierState, BetweenDOCTYPEPublicAndSystemIdentifiersState, BogusCommentState, BogusDOCTYPEState, CDATASectionBracketState, CDATASectionEndState, CDATASectionState, CharacterReferenceState, CommentEndBangState, CommentEndDashState, CommentEndState, CommentLessThanSignBangDashDashState, CommentLessThanSignBangDashState, CommentLessThanSignBangState, CommentLessThanSignState, CommentStartDashState, CommentStartState, CommentState, DataState, DecimalCharacterReferenceStartState, DecimalCharacterReferenceState, DOCTYPENameState, DOCTYPEPublicIdentifierDoubleQuotedState, DOCTYPEPublicIdentifierSingleQuotedState, DOCTYPEState, DOCTYPESystemIdentifierDoubleQuotedState, DOCTYPESystemIdentifierSingleQuotedState, EndTagOpenState, HexadecimalCharacterReferenceStartState, HexadecimalCharacterReferenceState, MarkupDeclarationOpenState, NamedCharacterReferenceState, NumericCharacterReferenceEndState, NumericCharacterReferenceState, PLAINTEXTState, RAWTEXTEndTagNameState, RAWTEXTEndTagOpenState, RAWTEXTLessThanSignState, RAWTEXTState, RCDATAEndTagNameState, RCDATAEndTagOpenState, RCDATALessThanSignState, RCDATAState, ScriptDataDoubleEscapedDashDashState, ScriptDataDoubleEscapedDashState, ScriptDataDoubleEscapedLessThanSignState, ScriptDataDoubleEscapedState, ScriptDataDoubleEscapeEndState, ScriptDataDoubleEscapeStartState, ScriptDataEndTagNameState, ScriptDataEndTagOpenState, ScriptDataEscapedDashDashState, ScriptDataEscapedDashState, ScriptDataEscapedEndTagNameState, ScriptDataEscapedEndTagOpenState, ScriptDataEscapedLessThanSignState, ScriptDataEscapedState, ScriptDataEscapeStartDashState, ScriptDataEscapeStartState, ScriptDataLessThanSignState, ScriptDataState, SelfClosingStartTagState, State, TagNameState, TagOpenState } from ".";
+import { Buffer } from "../buffer";
+import { CharacterToken, CommentToken, DOCTYPEToken, StartTagToken, EndTagToken } from "../token";
+import Tokenizer from "../tokenizer";
 
 export abstract class AbstractState implements State {
 
-  buffer: Buffer;
+  private tokenizer: Tokenizer;
 
-  private states: States;
-
-  private actions: StateActions;
-
-  constructor(buffer: Buffer, states: States, actions: StateActions) {
-    this.buffer = buffer;
-    this.states = states;
-    this.actions = actions;
+  constructor(tokenizer: Tokenizer) {
+    this.tokenizer = tokenizer;
   }
 
   abstract consume(character: string): void;
 
   switchState(state: State): void {
-    this.actions.switchState(state);
+    this.tokenizer.state = state;
   }
 
   setReturnState(returnState: State): void {
-    this.actions.setReturnState(returnState);
+    this.tokenizer.returnState = returnState;
   }
 
   createCommentToken(data = ''): void {
-    this.actions.createCommentToken(data);
+    this.tokenizer.commentToken = { data };
   }
 
   createDOCTYPEToken(): void {
-    this.actions.createDOCTYPEToken();
+    this.tokenizer.doctypeToken = { forceQuirks: 'off' };
   }
 
   createStartTagToken(name = ''): void {
-    this.actions.createStartTagToken(name);
+    this.tokenizer.startTagToken = { name, attributes: [], selfClosing: 'unset' };
   }
 
   createEndTagToken(name = ''): void {
-    this.actions.createEndTagToken(name);
+    this.tokenizer.endTagToken = { name };
   }
 
   startNewTagAttribute(name = '', value = ''): void {
-    this.actions.startNewTagAttribute(name, value);
-  }
-
-  setDOCTYPETokenName(name = ''): void {
-    this.actions.setDOCTYPETokenName(name);
-  }
-
-  setDOCTYPETokenSystemIdentifier(publicIdentifier = ''): void {
-    this.actions.setDOCTYPETokenSystemIdentifier(publicIdentifier);
-  }
-
-  setDOCTYPETokenPublicIdentifier(systemIdentifier = ''): void {
-    this.actions.setDOCTYPETokenPublicIdentifier(systemIdentifier);
-  }
-
-  setDOCTYPETokenForceQuirks(forceQuirks: 'on' | 'off'): void {
-    this.actions.setDOCTYPETokenForceQuirks(forceQuirks);
+    this.tokenizer.startTagToken.attributes.push({ name, value });
   }
 
   emitCharacterToken(token: CharacterToken): void {
-    this.actions.emitCharacterToken(token);
+    this.tokenizer.callbacks.emitCharacterToken(token);
   }
 
   emitCommentToken(): void {
-    this.actions.emitCommentToken();
+    this.tokenizer.callbacks.emitCommentToken(this.tokenizer.commentToken);
   }
 
   emitDOCTYPEToken(): void {
-    this.actions.emitDOCTYPEToken();
+    this.tokenizer.callbacks.emitDOCTYPEToken(this.tokenizer.doctypeToken);
   }
 
   emitStartTagToken(): void {
-    this.actions.emitStartTagToken();
+    this.tokenizer.callbacks.emitStartTagToken(this.tokenizer.startTagToken);
   }
 
   emitEndTagToken(): void {
-    this.actions.emitEndTagToken();
+    this.tokenizer.callbacks.emitEndTagToken(this.tokenizer.endTagToken);
   }
 
   emitEndOfFileToken(): void {
-    this.actions.emitEndOfFileToken();
-  }
-
-  setTemporaryBuffer(data = ''): void {
-    this.actions.setTemporaryBuffer(data);
-  }
-
-  appendToTemporaryBuffer(data: string): void {
-    this.actions.appendToTemporaryBuffer(data);
+    this.tokenizer.callbacks.emitEndOfFileToken();
   }
 
   reconsumeInState(character: string, state: State): void {
-    this.actions.reconsumeInState(character, state);
+    this.tokenizer.state = state;
+    this.tokenizer.state.consume(character);
   }
 
   reconsumeInReturnState(character: string): void {
-    this.actions.reconsumeInReturnState(character);
-  }
-
-  setCharacterReferenceCode(characterReferenceCode: number): void {
-    this.actions.setCharacterReferenceCode(characterReferenceCode);
+    this.tokenizer.state = this.tokenizer.returnState;
+    this.tokenizer.state.consume(character);
   }
 
   flushCodePoints(): void {
-    this.actions.flushCodePoints();
+    // TODO
+  }
+
+  get temporaryBuffer(): string {
+    return this.tokenizer.temporaryBuffer;
+  }
+
+  set temporaryBuffer(temporaryBuffer: string) {
+    this.tokenizer.temporaryBuffer = temporaryBuffer;
+  }
+
+  get characterReferenceCode(): number {
+    return this.tokenizer.characterReferenceCode;
+  }
+
+  get commentToken(): CommentToken {
+    return this.tokenizer.commentToken;
+  }
+
+  get doctypeToken(): DOCTYPEToken {
+    return this.tokenizer.doctypeToken;
+  }
+
+  get startTagToken(): StartTagToken {
+    return this.tokenizer.startTagToken;
+  }
+
+  get endTagToken(): EndTagToken {
+    return this.tokenizer.endTagToken;
   }
 
   get dataState(): DataState {
-    return this.states.dataState;
+    return this.tokenizer.dataState;
+  }
+
+  get buffer(): Buffer {
+    return this.tokenizer.buffer;
   }
 
   get rcdataState(): RCDATAState {
-    return this.states.rcdataState;
+    return this.tokenizer.rcdataState;
   }
 
   get rawTextState(): RAWTEXTState {
-    return this.states.rawTextState;
+    return this.tokenizer.rawTextState;
   }
 
   get scriptDataState(): ScriptDataState {
-    return this.states.scriptDataState;
+    return this.tokenizer.scriptDataState;
   }
 
   get plainTextState(): PLAINTEXTState {
-    return this.states.plainTextState;
+    return this.tokenizer.plainTextState;
   }
 
   get tagOpenState(): TagOpenState {
-    return this.states.tagOpenState;
+    return this.tokenizer.tagOpenState;
   }
 
   get endTagOpenState(): EndTagOpenState {
-    return this.states.endTagOpenState;
+    return this.tokenizer.endTagOpenState;
   }
 
   get tagNameState(): TagNameState {
-    return this.states.tagNameState;
+    return this.tokenizer.tagNameState;
   }
 
   get rcdataLessThanSignState(): RCDATALessThanSignState {
-    return this.states.rcdataLessThanSignState;
+    return this.tokenizer.rcdataLessThanSignState;
   }
 
   get rcdataEndTagOpenState(): RCDATAEndTagOpenState {
-    return this.states.rcdataEndTagOpenState;
+    return this.tokenizer.rcdataEndTagOpenState;
   }
 
   get rcdataEndTagNameState(): RCDATAEndTagNameState {
-    return this.states.rcdataEndTagNameState;
+    return this.tokenizer.rcdataEndTagNameState;
   }
 
   get rawTextLessThanSignState(): RAWTEXTLessThanSignState {
-    return this.states.rawTextLessThanSignState;
+    return this.tokenizer.rawTextLessThanSignState;
   }
 
   get rawTextEndTagOpenState(): RAWTEXTEndTagOpenState {
-    return this.states.rawTextEndTagOpenState;
+    return this.tokenizer.rawTextEndTagOpenState;
   }
 
   get rawTextEndTagNameState(): RAWTEXTEndTagNameState {
-    return this.states.rawTextEndTagNameState;
+    return this.tokenizer.rawTextEndTagNameState;
   }
 
   get scriptDataLessThanSignState(): ScriptDataLessThanSignState {
-    return this.states.scriptDataLessThanSignState;
+    return this.tokenizer.scriptDataLessThanSignState;
   }
 
   get scriptDataEndTagOpenState(): ScriptDataEndTagOpenState {
-    return this.states.scriptDataEndTagOpenState;
+    return this.tokenizer.scriptDataEndTagOpenState;
   }
 
   get scriptDataEndTagNameState(): ScriptDataEndTagNameState {
-    return this.states.scriptDataEndTagNameState;
+    return this.tokenizer.scriptDataEndTagNameState;
   }
 
   get scriptDataEscapeStartState(): ScriptDataEscapeStartState {
-    return this.states.scriptDataEscapeStartState;
+    return this.tokenizer.scriptDataEscapeStartState;
   }
 
   get scriptDataEscapeStartDashState(): ScriptDataEscapeStartDashState {
-    return this.states.scriptDataEscapeStartDashState;
+    return this.tokenizer.scriptDataEscapeStartDashState;
   }
 
   get scriptDataEscapedState(): ScriptDataEscapedState {
-    return this.states.scriptDataEscapedState;
+    return this.tokenizer.scriptDataEscapedState;
   }
 
   get scriptDataEscapedDashState(): ScriptDataEscapedDashState {
-    return this.states.scriptDataEscapedDashState;
+    return this.tokenizer.scriptDataEscapedDashState;
   }
 
   get scriptDataEscapedDashDashState(): ScriptDataEscapedDashDashState {
-    return this.states.scriptDataEscapedDashDashState;
+    return this.tokenizer.scriptDataEscapedDashDashState;
   }
 
   get scriptDataEscapedLessThanSignState(): ScriptDataEscapedLessThanSignState {
-    return this.states.scriptDataEscapedLessThanSignState;
+    return this.tokenizer.scriptDataEscapedLessThanSignState;
   }
 
   get scriptDataEscapedEndTagOpenState(): ScriptDataEscapedEndTagOpenState {
-    return this.states.scriptDataEscapedEndTagOpenState;
+    return this.tokenizer.scriptDataEscapedEndTagOpenState;
   }
 
   get scriptDataEscapedEndTagNameState(): ScriptDataEscapedEndTagNameState {
-    return this.states.scriptDataEscapedEndTagNameState;
+    return this.tokenizer.scriptDataEscapedEndTagNameState;
   }
 
   get scriptDataDoubleEscapeStartState(): ScriptDataDoubleEscapeStartState {
-    return this.states.scriptDataDoubleEscapeStartState;
+    return this.tokenizer.scriptDataDoubleEscapeStartState;
   }
 
   get scriptDataDoubleEscapedState(): ScriptDataDoubleEscapedState {
-    return this.states.scriptDataDoubleEscapedState;
+    return this.tokenizer.scriptDataDoubleEscapedState;
   }
 
   get scriptDataDoubleEscapedDashState(): ScriptDataDoubleEscapedDashState {
-    return this.states.scriptDataDoubleEscapedDashState;
+    return this.tokenizer.scriptDataDoubleEscapedDashState;
   }
 
   get scriptDataDoubleEscapedDashDashState(): ScriptDataDoubleEscapedDashDashState {
-    return this.states.scriptDataDoubleEscapedDashDashState;
+    return this.tokenizer.scriptDataDoubleEscapedDashDashState;
   }
 
   get scriptDataDoubleEscapedLessThanSignState(): ScriptDataDoubleEscapedLessThanSignState {
-    return this.states.scriptDataDoubleEscapedLessThanSignState;
+    return this.tokenizer.scriptDataDoubleEscapedLessThanSignState;
   }
 
   get scriptDataDoubleEscapeEndState(): ScriptDataDoubleEscapeEndState {
-    return this.states.scriptDataDoubleEscapeEndState;
+    return this.tokenizer.scriptDataDoubleEscapeEndState;
   }
 
   get beforeAttributeNameState(): BeforeAttributeNameState {
-    return this.states.beforeAttributeNameState;
+    return this.tokenizer.beforeAttributeNameState;
   }
 
   get attributeNameState(): AttributeNameState {
-    return this.states.attributeNameState;
+    return this.tokenizer.attributeNameState;
   }
 
   get afterAttributeNameState(): AfterAttributeNameState {
-    return this.states.afterAttributeNameState;
+    return this.tokenizer.afterAttributeNameState;
   }
 
   get beforeAttributeValueState(): BeforeAttributeValueState {
-    return this.states.beforeAttributeValueState;
+    return this.tokenizer.beforeAttributeValueState;
   }
 
   get attributeValueDoubleQuotedState(): AttributeValueDoubleQuotedState {
-    return this.states.attributeValueDoubleQuotedState;
+    return this.tokenizer.attributeValueDoubleQuotedState;
   }
 
   get attributeValueSingleQuotedState(): AttributeValueSingleQuotedState {
-    return this.states.attributeValueSingleQuotedState;
+    return this.tokenizer.attributeValueSingleQuotedState;
   }
 
   get attributeValueUnquotedState(): AttributeValueUnquotedState {
-    return this.states.attributeValueUnquotedState;
+    return this.tokenizer.attributeValueUnquotedState;
   }
 
   get afterAttributeValueQuotedState(): AfterAttributeValueQuotedState {
-    return this.states.afterAttributeValueQuotedState;
+    return this.tokenizer.afterAttributeValueQuotedState;
   }
 
   get selfClosingStartTagState(): SelfClosingStartTagState {
-    return this.states.selfClosingStartTagState;
+    return this.tokenizer.selfClosingStartTagState;
   }
 
   get bogusCommentState(): BogusCommentState {
-    return this.states.bogusCommentState;
+    return this.tokenizer.bogusCommentState;
   }
 
   get markupDeclarationOpenState(): MarkupDeclarationOpenState {
-    return this.states.markupDeclarationOpenState;
+    return this.tokenizer.markupDeclarationOpenState;
   }
 
   get commentStartState(): CommentStartState {
-    return this.states.commentStartState;
+    return this.tokenizer.commentStartState;
   }
 
   get commentStartDashState(): CommentStartDashState {
-    return this.states.commentStartDashState;
+    return this.tokenizer.commentStartDashState;
   }
 
   get commentState(): CommentState {
-    return this.states.commentState;
+    return this.tokenizer.commentState;
   }
 
   get commentLessThanSignState(): CommentLessThanSignState {
-    return this.states.commentLessThanSignState;
+    return this.tokenizer.commentLessThanSignState;
   }
 
   get commentLessThanSignBangState(): CommentLessThanSignBangState {
-    return this.states.commentLessThanSignBangState;
+    return this.tokenizer.commentLessThanSignBangState;
   }
 
   get commentLessThanSignBangDashState(): CommentLessThanSignBangDashState {
-    return this.states.commentLessThanSignBangDashState;
+    return this.tokenizer.commentLessThanSignBangDashState;
   }
 
   get commentLessThanSignBangDashDashState(): CommentLessThanSignBangDashDashState {
-    return this.states.commentLessThanSignBangDashDashState;
+    return this.tokenizer.commentLessThanSignBangDashDashState;
   }
 
   get commentEndDashState(): CommentEndDashState {
-    return this.states.commentEndDashState;
+    return this.tokenizer.commentEndDashState;
   }
 
   get commentEndState(): CommentEndState {
-    return this.states.commentEndState;
+    return this.tokenizer.commentEndState;
   }
 
   get commentEndBangState(): CommentEndBangState {
-    return this.states.commentEndBangState;
+    return this.tokenizer.commentEndBangState;
   }
 
   get doctypeState(): DOCTYPEState {
-    return this.states.doctypeState;
+    return this.tokenizer.doctypeState;
   }
 
   get beforeDOCTYPENameState(): BeforeDOCTYPENameState {
-    return this.states.beforeDOCTYPENameState;
+    return this.tokenizer.beforeDOCTYPENameState;
   }
 
   get doctypeNameState(): DOCTYPENameState {
-    return this.states.doctypeNameState;
+    return this.tokenizer.doctypeNameState;
   }
 
   get afterDOCTYPENameState(): AfterDOCTYPENameState {
-    return this.states.afterDOCTYPENameState;
+    return this.tokenizer.afterDOCTYPENameState;
   }
 
   get afterDOCTYPEPublicKeywordState(): AfterDOCTYPEPublicKeywordState {
-    return this.states.afterDOCTYPEPublicKeywordState;
+    return this.tokenizer.afterDOCTYPEPublicKeywordState;
   }
 
   get beforeDOCTYPEPublicIdentifierState(): BeforeDOCTYPEPublicIdentifierState {
-    return this.states.beforeDOCTYPEPublicIdentifierState;
+    return this.tokenizer.beforeDOCTYPEPublicIdentifierState;
   }
 
   get doctypePublicIdentifierDoubleQuotedState(): DOCTYPEPublicIdentifierDoubleQuotedState {
-    return this.states.doctypePublicIdentifierDoubleQuotedState;
+    return this.tokenizer.doctypePublicIdentifierDoubleQuotedState;
   }
 
   get doctypePublicIdentifierSingleQuotedState(): DOCTYPEPublicIdentifierSingleQuotedState {
-    return this.states.doctypePublicIdentifierSingleQuotedState;
+    return this.tokenizer.doctypePublicIdentifierSingleQuotedState;
   }
 
   get afterDOCTYPEPublicIdentifierState(): AfterDOCTYPEPublicIdentifierState {
-    return this.states.afterDOCTYPEPublicIdentifierState;
+    return this.tokenizer.afterDOCTYPEPublicIdentifierState;
   }
 
   get betweenDOCTYPEPublicAndSystemIdentifiersState(): BetweenDOCTYPEPublicAndSystemIdentifiersState {
-    return this.states.betweenDOCTYPEPublicAndSystemIdentifiersState;
+    return this.tokenizer.betweenDOCTYPEPublicAndSystemIdentifiersState;
   }
 
   get afterDOCTYPESystemKeywordState(): AfterDOCTYPESystemKeywordState {
-    return this.states.afterDOCTYPESystemKeywordState;
+    return this.tokenizer.afterDOCTYPESystemKeywordState;
   }
 
   get beforeDOCTYPESystemIdentifierState(): BeforeDOCTYPESystemIdentifierState {
-    return this.states.beforeDOCTYPESystemIdentifierState;
+    return this.tokenizer.beforeDOCTYPESystemIdentifierState;
   }
 
   get doctypeSystemIdentifierDoubleQuotedState(): DOCTYPESystemIdentifierDoubleQuotedState {
-    return this.states.doctypeSystemIdentifierDoubleQuotedState;
+    return this.tokenizer.doctypeSystemIdentifierDoubleQuotedState;
   }
 
   get doctypeSystemIdentifierSingleQuotedState(): DOCTYPESystemIdentifierSingleQuotedState {
-    return this.states.doctypeSystemIdentifierSingleQuotedState;
+    return this.tokenizer.doctypeSystemIdentifierSingleQuotedState;
   }
 
   get afterDOCTYPESystemIdentifierState(): AfterDOCTYPESystemIdentifierState {
-    return this.states.afterDOCTYPESystemIdentifierState;
+    return this.tokenizer.afterDOCTYPESystemIdentifierState;
   }
 
   get bogusDOCTYPEState(): BogusDOCTYPEState {
-    return this.states.bogusDOCTYPEState;
+    return this.tokenizer.bogusDOCTYPEState;
   }
 
   get cdataSectionState(): CDATASectionState {
-    return this.states.cdataSectionState;
+    return this.tokenizer.cdataSectionState;
   }
 
   get cdataSectionBracketState(): CDATASectionBracketState {
-    return this.states.cdataSectionBracketState;
+    return this.tokenizer.cdataSectionBracketState;
   }
 
   get cdataSectionEndState(): CDATASectionEndState {
-    return this.states.cdataSectionEndState;
+    return this.tokenizer.cdataSectionEndState;
   }
 
   get characterReferenceState(): CharacterReferenceState {
-    return this.states.characterReferenceState;
+    return this.tokenizer.characterReferenceState;
   }
 
   get namedCharacterReferenceState(): NamedCharacterReferenceState {
-    return this.states.namedCharacterReferenceState;
+    return this.tokenizer.namedCharacterReferenceState;
   }
 
   get ambiguousAmpersandState(): AmbiguousAmpersandState {
-    return this.states.ambiguousAmpersandState;
+    return this.tokenizer.ambiguousAmpersandState;
   }
 
   get numericCharacterReferenceState(): NumericCharacterReferenceState {
-    return this.states.numericCharacterReferenceState;
+    return this.tokenizer.numericCharacterReferenceState;
   }
 
   get hexadecimalCharacterReferenceStartState(): HexadecimalCharacterReferenceStartState {
-    return this.states.hexadecimalCharacterReferenceStartState;
+    return this.tokenizer.hexadecimalCharacterReferenceStartState;
   }
 
   get decimalCharacterReferenceStartState(): DecimalCharacterReferenceStartState {
-    return this.states.decimalCharacterReferenceStartState;
+    return this.tokenizer.decimalCharacterReferenceStartState;
   }
 
   get hexadecimalCharacterReferenceState(): HexadecimalCharacterReferenceState {
-    return this.states.hexadecimalCharacterReferenceState;
+    return this.tokenizer.hexadecimalCharacterReferenceState;
   }
 
   get decimalCharacterReferenceState(): DecimalCharacterReferenceState {
-    return this.states.decimalCharacterReferenceState;
+    return this.tokenizer.decimalCharacterReferenceState;
   }
 
   get numericCharacterReferenceEndState(): NumericCharacterReferenceEndState {
-    return this.states.numericCharacterReferenceEndState;
+    return this.tokenizer.numericCharacterReferenceEndState;
   }
 
 }
