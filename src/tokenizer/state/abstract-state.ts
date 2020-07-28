@@ -89,11 +89,7 @@ import {
   StateActions
 } from "./state-actions";
 import {
-  CharacterToken,
-  CommentToken,
-  DOCTYPEToken,
-  EndTagToken,
-  StartTagToken
+  CharacterToken
 } from "../token";
 
 export abstract class AbstractState implements State {
@@ -120,11 +116,7 @@ export abstract class AbstractState implements State {
     this.actions.setReturnState(returnState);
   }
 
-  createCharacterToken(data: string): void {
-    this.actions.createCharacterToken(data);
-  }
-
-  createCommentToken(data: string): void {
+  createCommentToken(data = ''): void {
     this.actions.createCommentToken(data);
   }
 
@@ -132,39 +124,43 @@ export abstract class AbstractState implements State {
     this.actions.createDOCTYPEToken();
   }
 
-  createEndTagToken(name: string): void {
+  createStartTagToken(name = ''): void {
+    this.actions.createStartTagToken(name);
+  }
+
+  createEndTagToken(name = ''): void {
     this.actions.createEndTagToken(name);
   }
 
-  createStartTagToken(name: string): void {
-    this.actions.createStartTagToken(name);
+  startNewTagAttribute(name = '', value = ''): void {
+    this.actions.startNewTagAttribute(name, value);
   }
 
   emitCharacterToken(token: CharacterToken): void {
     this.actions.emitCharacterToken(token);
   }
 
-  emitCommentToken(token: CommentToken): void {
-    this.actions.emitCommentToken(token);
+  emitCommentToken(): void {
+    this.actions.emitCommentToken();
   }
 
-  emitDOCTYPEToken(token: DOCTYPEToken): void {
-    this.actions.emitDOCTYPEToken(token);
+  emitDOCTYPEToken(): void {
+    this.actions.emitDOCTYPEToken();
+  }
+
+  emitStartTagToken(): void {
+    this.actions.emitStartTagToken();
+  }
+
+  emitEndTagToken(): void {
+    this.actions.emitEndTagToken();
   }
 
   emitEndOfFileToken(): void {
     this.actions.emitEndOfFileToken();
   }
 
-  emitEndTagToken(token: EndTagToken): void {
-    this.actions.emitEndTagToken(token);
-  }
-
-  emitStartTagToken(token: StartTagToken): void {
-    this.actions.emitStartTagToken(token);
-  }
-
-  setTemporaryBuffer(data: string): void {
+  setTemporaryBuffer(data = ''): void {
     this.actions.setTemporaryBuffer(data);
   }
 

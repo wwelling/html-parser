@@ -24,11 +24,11 @@ export class TagOpenState extends AbstractState {
     } else if (character === Characters.Solidus) {
       this.switchState(this.endTagOpenState);
     } else if (isASCIIAlpha(character)) {
-      this.createStartTagToken('');
+      this.createStartTagToken();
       this.reconsumeInState(character, this.tagNameState);
     } else if (character === Characters.QuestionMark) {
       console.warn('unexpected-question-mark-instead-of-tag-name parse error');
-      this.createCommentToken('');
+      this.createCommentToken();
       this.reconsumeInState(character, this.bogusCommentState);
     } else if (character === null) {
       console.warn('eof-before-tag-name parse error');

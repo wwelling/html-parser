@@ -1,20 +1,20 @@
 import { State } from ".";
-import { CharacterToken, CommentToken, DOCTYPEToken, EndTagToken, StartTagToken } from "../token";
+import { CharacterToken } from "../token";
 
 export interface StateActions {
   switchState: (state: State) => void;
   setReturnState: (returnState: State) => void;
-  createCharacterToken: (data: string) => void;
   createCommentToken: (data: string) => void;
   createDOCTYPEToken: () => void;
-  createEndTagToken: (name: string) => void;
   createStartTagToken: (name: string) => void;
+  createEndTagToken: (name: string) => void;
+  startNewTagAttribute: (name: string, value: string) => void;
   emitCharacterToken: (token: CharacterToken) => void;
-  emitCommentToken: (token: CommentToken) => void;
-  emitDOCTYPEToken: (token: DOCTYPEToken) => void;
+  emitCommentToken: () => void;
+  emitDOCTYPEToken: () => void;
+  emitStartTagToken: () => void;
+  emitEndTagToken: () => void;
   emitEndOfFileToken: () => void;
-  emitEndTagToken: (token: EndTagToken) => void;
-  emitStartTagToken: (token: StartTagToken) => void;
   setTemporaryBuffer: (data: string) => void;
   appendToTemporaryBuffer: (data: string) => void;
   reconsumeInState: (character: string, state?: State) => void;

@@ -1,4 +1,5 @@
 import { AbstractState } from "./abstract-state";
+import { Characters } from "../characters";
 
 // 12.2.5.34 After attribute name state
 // Consume the next input character:
@@ -21,7 +22,30 @@ import { AbstractState } from "./abstract-state";
 export class AfterAttributeNameState extends AbstractState {
   consume(character: string): void {
     switch (character) {
+      case Characters.CharacterTabulation:
+      case Characters.LineFeed:
+      case Characters.FormFeed:
+      case Characters.Space:
+        // ignore the character
+        break;
+      case Characters.Solidus:
+        this.switchState(this.selfClosingStartTagState);
+        break;
+      case Characters.EqualsSign:
+        this.switchState(this.beforeAttributeValueState);
+        break;
+      case Characters.GreaterThanSign:
+        this.switchState(this.dataState);
+        // assume start tag token for now
+        this.emitStartTagToken();
+        break;
+      case null:
+        console.warn('eof-in-tag parse error');
+        this.emitEndOfFileToken();
+        break;
       default:
+        this.startNewTagAttribute();
+        this.reconsumeInState(character, this.attributeNameState);
         break;
     }
   }

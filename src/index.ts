@@ -1,5 +1,6 @@
 import fs from 'fs';
 import Reader from './reader';
+import { CharacterToken, CommentToken, DOCTYPEToken, EndTagToken, StartTagToken } from './tokenizer/token';
 import Tokenizer from './tokenizer/tokenizer';
 
 const reader = new Reader();
@@ -19,6 +20,24 @@ switch (test) {
             for (let i = 0; i < attempts; i++) {
               console.time(file);
               new Tokenizer({
+                emitCharacterToken: (token: CharacterToken) => {
+                  //
+                },
+                emitCommentToken: (token: CommentToken) => {
+                  //
+                },
+                emitDOCTYPEToken: (token: DOCTYPEToken) => {
+                  //
+                },
+                emitStartTagToken: (token: StartTagToken) => {
+                  //
+                },
+                emitEndTagToken: (token: EndTagToken) => {
+                  //
+                },
+                emitEndOfFileToken: () => {
+                  //
+                },
                 onEnd: () => {
                   console.timeEnd(file);
                 }

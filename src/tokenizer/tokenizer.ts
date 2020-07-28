@@ -27,8 +27,6 @@ export default class Tokenizer {
 
   done: boolean;
 
-  characterToken: CharacterToken;
-
   commentToken: CommentToken;
 
   doctypeToken: DOCTYPEToken;
@@ -48,38 +46,38 @@ export default class Tokenizer {
       setReturnState: (returnState: State) => {
         this.returnState = returnState;
       },
-      createCharacterToken: (data: string) => {
-        this.characterToken = { data };
-      },
       createCommentToken: (data: string) => {
         this.commentToken = { data };
       },
       createDOCTYPEToken: () => {
         this.doctypeToken = { forceQuirksFlag: 'off' };
       },
+      createStartTagToken: (name: string) => {
+        this.startTagToken = { name, attributes: [], selfClosingFlag: 'unset' };
+      },
       createEndTagToken: (name: string) => {
         this.endTagToken = { name };
       },
-      createStartTagToken: (name: string) => {
-        this.startTagToken = { name, attributes: {}, selfClosingFlag: 'unset' };
+      startNewTagAttribute: (name: string, value: string) => {
+        this.startTagToken.attributes.push({ name, value });
       },
       emitCharacterToken: (token: CharacterToken) => {
-        //
+        callbacks.emitCharacterToken(token);
       },
-      emitCommentToken: (token: CommentToken) => {
-        //
+      emitCommentToken: () => {
+        callbacks.emitCommentToken(this.commentToken);
       },
-      emitDOCTYPEToken: (token: DOCTYPEToken) => {
-        //
+      emitDOCTYPEToken: () => {
+        callbacks.emitDOCTYPEToken(this.doctypeToken);
+      },
+      emitStartTagToken: () => {
+        callbacks.emitStartTagToken(this.startTagToken);
+      },
+      emitEndTagToken: () => {
+        callbacks.emitEndTagToken(this.endTagToken);
       },
       emitEndOfFileToken: () => {
-        //
-      },
-      emitEndTagToken: (token: EndTagToken) => {
-        //
-      },
-      emitStartTagToken: (token: StartTagToken) => {
-        //
+        callbacks.emitEndOfFileToken();
       },
       setTemporaryBuffer: (data: string) => {
         this.temporaryBuffer = data;

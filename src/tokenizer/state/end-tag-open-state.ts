@@ -16,7 +16,7 @@ import { isASCIIAlpha, Characters } from "../characters";
 export class EndTagOpenState extends AbstractState {
   consume(character: string): void {
     if (isASCIIAlpha(character)) {
-      this.createEndTagToken('');
+      this.createEndTagToken();
       this.reconsumeInState(character, this.tagNameState);
     } else if (character === Characters.GreaterThanSign) {
       console.warn('missing-end-tag-name parse parse error');
@@ -28,7 +28,7 @@ export class EndTagOpenState extends AbstractState {
       this.emitEndOfFileToken();
     } else {
       console.warn('invalid-first-character-of-tag-name parse error');
-      this.createCommentToken('');
+      this.createCommentToken();
       this.reconsumeInState(character, this.bogusCommentState);
     }
   }

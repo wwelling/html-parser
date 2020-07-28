@@ -12,7 +12,7 @@ import { AbstractState } from "./abstract-state";
 // Flush code points consumed as a character reference. Reconsume in the return state.
 export class CharacterReferenceState extends AbstractState {
   consume(character: string): void {
-    this.setTemporaryBuffer('');
+    this.setTemporaryBuffer();
     this.appendToTemporaryBuffer(Characters.Ampersand);
     if (isASCIIAlphanumeric(character)) {
       this.reconsumeInState(character, this.namedCharacterReferenceState);
