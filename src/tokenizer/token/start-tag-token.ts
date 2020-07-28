@@ -5,6 +5,6 @@ export interface Attribute {
 
 export interface StartTagToken {
   name: string;
-  selfClosingFlag: 'set' | 'unset';
+  selfClosing: 'set' | 'unset';
   attributes: Attribute[];
 }

@@ -9,6 +9,7 @@ export interface StateActions {
   createStartTagToken: (name: string) => void;
   createEndTagToken: (name: string) => void;
   startNewTagAttribute: (name: string, value: string) => void;
+  setDOCTYPETokenForceQuirks: (forceQuirks: 'on' | 'off') => void;
   emitCharacterToken: (token: CharacterToken) => void;
   emitCommentToken: () => void;
   emitDOCTYPEToken: () => void;

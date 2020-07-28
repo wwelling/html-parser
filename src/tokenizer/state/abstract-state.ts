@@ -136,6 +136,10 @@ export abstract class AbstractState implements State {
     this.actions.startNewTagAttribute(name, value);
   }
 
+  setDOCTYPETokenForceQuirks(forceQuirks: 'on' | 'off'): void {
+    this.actions.setDOCTYPETokenForceQuirks(forceQuirks);
+  }
+
   emitCharacterToken(token: CharacterToken): void {
     this.actions.emitCharacterToken(token);
   }

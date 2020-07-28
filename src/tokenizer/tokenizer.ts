@@ -50,16 +50,19 @@ export default class Tokenizer {
         this.commentToken = { data };
       },
       createDOCTYPEToken: () => {
-        this.doctypeToken = { forceQuirksFlag: 'off' };
+        this.doctypeToken = { forceQuirks: 'off' };
       },
       createStartTagToken: (name: string) => {
-        this.startTagToken = { name, attributes: [], selfClosingFlag: 'unset' };
+        this.startTagToken = { name, attributes: [], selfClosing: 'unset' };
       },
       createEndTagToken: (name: string) => {
         this.endTagToken = { name };
       },
       startNewTagAttribute: (name: string, value: string) => {
         this.startTagToken.attributes.push({ name, value });
+      },
+      setDOCTYPETokenForceQuirks: (forceQuirks: 'on' | 'off') => {
+        this.doctypeToken.forceQuirks = forceQuirks;
       },
       emitCharacterToken: (token: CharacterToken) => {
         callbacks.emitCharacterToken(token);
