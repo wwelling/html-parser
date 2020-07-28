@@ -1,3 +1,4 @@
+import { Characters } from "../characters";
 import { AbstractState } from "./abstract-state";
 
 // 12.2.5.57 After DOCTYPE public keyword state
@@ -27,7 +28,38 @@ import { AbstractState } from "./abstract-state";
 export class AfterDOCTYPEPublicKeywordState extends AbstractState {
   consume(character: string): void {
     switch (character) {
+      case Characters.CharacterTabulation:
+      case Characters.LineFeed:
+      case Characters.FormFeed:
+      case Characters.Space:
+        this.switchState(this.beforeDOCTYPEPublicIdentifierState);
+        break;
+      case Characters.QuotationMark:
+        console.warn('missing-whitespace-after-doctype-public-keyword parse error');
+        this.setDOCTYPETokenPublicIdentifier();
+        this.switchState(this.doctypePublicIdentifierDoubleQuotedState);
+        break;
+      case Characters.Apostrophe:
+        console.warn('missing-whitespace-after-doctype-public-keyword parse error');
+        this.setDOCTYPETokenPublicIdentifier();
+        this.switchState(this.doctypePublicIdentifierSingleQuotedState);
+        break;
+      case Characters.GreaterThanSign:
+        console.warn('missing-doctype-public-identifier error');
+        this.setDOCTYPETokenForceQuirks('on');
+        this.switchState(this.dataState);
+        this.emitDOCTYPEToken();
+        break;
+      case null:
+        console.warn('eof-in-doctype parse error');
+        this.setDOCTYPETokenForceQuirks('on');
+        this.emitDOCTYPEToken();
+        this.emitEndOfFileToken();
+        break;
       default:
+        console.warn('missing-quote-before-doctype-public-identifier parse error');
+        this.setDOCTYPETokenForceQuirks('on');
+        this.reconsumeInState(character, this.bogusDOCTYPEState);
         break;
     }
   }

@@ -31,9 +31,9 @@ export default class Tokenizer {
 
   doctypeToken: DOCTYPEToken;
 
-  endTagToken: EndTagToken;
-
   startTagToken: StartTagToken;
+
+  endTagToken: EndTagToken;
 
   constructor(callbacks: TokenizerCallbacks) {
     this.callbacks = callbacks;
@@ -60,6 +60,15 @@ export default class Tokenizer {
       },
       startNewTagAttribute: (name: string, value: string) => {
         this.startTagToken.attributes.push({ name, value });
+      },
+      setDOCTYPETokenName: (name: string) => {
+        this.doctypeToken.name = name;
+      },
+      setDOCTYPETokenSystemIdentifier: (publicIdentifier: string) => {
+        this.doctypeToken.publicIdentifier = publicIdentifier;
+      },
+      setDOCTYPETokenPublicIdentifier: (systemIdentifier: string) => {
+        this.doctypeToken.systemIdentifier = systemIdentifier;
       },
       setDOCTYPETokenForceQuirks: (forceQuirks: 'on' | 'off') => {
         this.doctypeToken.forceQuirks = forceQuirks;

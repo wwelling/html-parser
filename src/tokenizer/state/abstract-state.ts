@@ -136,6 +136,18 @@ export abstract class AbstractState implements State {
     this.actions.startNewTagAttribute(name, value);
   }
 
+  setDOCTYPETokenName(name = ''): void {
+    this.actions.setDOCTYPETokenName(name);
+  }
+
+  setDOCTYPETokenSystemIdentifier(publicIdentifier = ''): void {
+    this.actions.setDOCTYPETokenSystemIdentifier(publicIdentifier);
+  }
+
+  setDOCTYPETokenPublicIdentifier(systemIdentifier = ''): void {
+    this.actions.setDOCTYPETokenPublicIdentifier(systemIdentifier);
+  }
+
   setDOCTYPETokenForceQuirks(forceQuirks: 'on' | 'off'): void {
     this.actions.setDOCTYPETokenForceQuirks(forceQuirks);
   }

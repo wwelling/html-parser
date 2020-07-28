@@ -1,4 +1,5 @@
 import { AbstractState } from "./abstract-state";
+import { Characters, isASCIIAlphanumeric } from "../characters";
 
 // 12.2.5.74 Ambiguous ampersand state
 // Consume the next input character:
@@ -12,7 +13,16 @@ import { AbstractState } from "./abstract-state";
 export class AmbiguousAmpersandState extends AbstractState {
   consume(character: string): void {
     switch (character) {
+      case Characters.SemiColon:
+        console.warn('unknown-named-character-reference parse error');
+        this.reconsumeInReturnState(character);
+        break;
       default:
+        if (isASCIIAlphanumeric(character)) {
+          // if the return state is either attribute value (double-quoted) state, attribute value (single-quoted) state or attribute value (unquoted) state
+        } else {
+          this.reconsumeInReturnState(character);
+        }
         break;
     }
   }

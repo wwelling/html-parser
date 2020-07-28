@@ -1,4 +1,5 @@
 import { AbstractState } from "./abstract-state";
+import { Characters } from "../characters";
 
 // 12.2.5.67 After DOCTYPE system identifier state
 // Consume the next input character:
@@ -14,12 +15,30 @@ import { AbstractState } from "./abstract-state";
 // Emit an end-of-file token.
 // ↪ Anything else
 // This is an unexpected-character-after-doctype-system-identifier parse error.
-// Reconsume in the bogus DOCTYPE
-// state. (This does not set the DOCTYPE token's force-quirks flag to on.)
+// Reconsume in the bogus DOCTYPE state.
+// (This does not set the DOCTYPE token's force-quirks flag to on.)
 export class AfterDOCTYPESystemIdentifierState extends AbstractState {
   consume(character: string): void {
     switch (character) {
+      case Characters.CharacterTabulation:
+      case Characters.LineFeed:
+      case Characters.FormFeed:
+      case Characters.Space:
+        // ignore the character
+        break;
+      case Characters.GreaterThanSign:
+        this.switchState(this.dataState);
+        this.emitDOCTYPEToken();
+        break;
+      case null:
+        console.warn('eof-in-doctype parse error');
+        this.setDOCTYPETokenForceQuirks('on');
+        this.emitDOCTYPEToken();
+        this.emitEndOfFileToken();
+        break;
       default:
+        console.warn('unexpected-character-after-doctype-system-identifier parse error');
+        this.reconsumeInState(character, this.bogusDOCTYPEState);
         break;
     }
   }

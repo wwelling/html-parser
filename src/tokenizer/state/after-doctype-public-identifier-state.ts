@@ -1,3 +1,4 @@
+import { Characters } from "../characters";
 import { AbstractState } from "./abstract-state";
 
 // 12.2.5.61 After DOCTYPE public identifier state
@@ -24,7 +25,35 @@ import { AbstractState } from "./abstract-state";
 export class AfterDOCTYPEPublicIdentifierState extends AbstractState {
   consume(character: string): void {
     switch (character) {
+      case Characters.CharacterTabulation:
+      case Characters.LineFeed:
+      case Characters.FormFeed:
+      case Characters.Space:
+        this.switchState(this.betweenDOCTYPEPublicAndSystemIdentifiersState);
+        break;
+      case Characters.GreaterThanSign:
+        this.switchState(this.dataState);
+        this.emitDOCTYPEToken();
+        break;
+      case Characters.QuotationMark:
+        console.warn('missing-whitespace-between-doctype-public-and-system-identifiers parse error');
+        this.setDOCTYPETokenSystemIdentifier();
+        this.switchState(this.doctypeSystemIdentifierDoubleQuotedState);
+        break;
+      case Characters.Apostrophe:
+        console.warn('missing-whitespace-between-doctype-public-and-system-identifiers parse error');
+        this.setDOCTYPETokenSystemIdentifier();
+        this.switchState(this.doctypeSystemIdentifierSingleQuotedState);
+        break;
+      case null:
+        console.warn('eof-in-doctype parse error');
+        this.setDOCTYPETokenForceQuirks('on');
+        this.emitEndOfFileToken();
+        break;
       default:
+        console.warn('missing-quote-before-doctype-system-identifier parse error');
+        this.setDOCTYPETokenForceQuirks('on');
+        this.reconsumeInState(character, this.bogusDOCTYPEState);
         break;
     }
   }

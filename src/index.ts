@@ -1,6 +1,5 @@
 import fs from 'fs';
 import Reader from './reader';
-import { EndTagToken, StartTagToken } from './tokenizer/token';
 import Tokenizer from './tokenizer/tokenizer';
 
 const reader = new Reader();

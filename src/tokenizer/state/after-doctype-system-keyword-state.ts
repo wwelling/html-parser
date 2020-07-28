@@ -1,4 +1,5 @@
 import { AbstractState } from "./abstract-state";
+import { Characters } from "../characters";
 
 // 12.2.5.63 After DOCTYPE system keyword state
 // Consume the next input character:
@@ -27,7 +28,38 @@ import { AbstractState } from "./abstract-state";
 export class AfterDOCTYPESystemKeywordState extends AbstractState {
   consume(character: string): void {
     switch (character) {
+      case Characters.CharacterTabulation:
+      case Characters.LineFeed:
+      case Characters.FormFeed:
+      case Characters.Space:
+        this.switchState(this.beforeDOCTYPESystemIdentifierState);
+        break;
+      case Characters.QuotationMark:
+        console.warn('missing-whitespace-after-doctype-system-keyword parse error');
+        this.setDOCTYPETokenSystemIdentifier();
+        this.switchState(this.doctypeSystemIdentifierDoubleQuotedState);
+        break;
+      case Characters.Apostrophe:
+        console.warn('missing-whitespace-after-doctype-system-keyword parse error');
+        this.setDOCTYPETokenSystemIdentifier();
+        this.switchState(this.doctypeSystemIdentifierSingleQuotedState);
+        break;
+      case Characters.GreaterThanSign:
+        console.warn('missing-doctype-system-identifier parse error');
+        this.setDOCTYPETokenForceQuirks('on');
+        this.switchState(this.dataState);
+        this.emitDOCTYPEToken();
+        break;
+      case null:
+        console.warn('eof-in-doctype parse error');
+        this.setDOCTYPETokenForceQuirks('on');
+        this.emitDOCTYPEToken();
+        this.emitEndOfFileToken();
+        break;
       default:
+        console.warn('missing-quote-before-doctype-system-identifier parse error');
+        this.setDOCTYPETokenForceQuirks('on');
+        this.reconsumeInState(character, this.bogusDOCTYPEState);
         break;
     }
   }
