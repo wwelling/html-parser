@@ -32,7 +32,7 @@ export class AfterDOCTYPESystemIdentifierState extends AbstractState {
         break;
       case null:
         console.warn('eof-in-doctype parse error');
-        this.setDOCTYPETokenForceQuirks('on');
+        this.doctypeToken.forceQuirks = 'on';
         this.emitDOCTYPEToken();
         this.emitEndOfFileToken();
         break;

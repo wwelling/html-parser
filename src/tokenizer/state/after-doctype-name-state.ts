@@ -35,7 +35,7 @@ export class AfterDOCTYPENameState extends AbstractState {
         break;
       case null:
         console.warn('eof-in-doctype parse error');
-        this.setDOCTYPETokenForceQuirks('on');
+        this.doctypeToken.forceQuirks = 'on';
         this.emitDOCTYPEToken();
         break;
       default: {
@@ -49,7 +49,7 @@ export class AfterDOCTYPENameState extends AbstractState {
           this.switchState(this.afterDOCTYPESystemKeywordState);
         } else {
           console.warn('invalid-character-sequence-after-doctype-name parse error');
-          this.setDOCTYPETokenForceQuirks('on');
+          this.doctypeToken.forceQuirks = 'on';
           this.reconsumeInState(character, this.bogusDOCTYPEState);
         }
       } break;
