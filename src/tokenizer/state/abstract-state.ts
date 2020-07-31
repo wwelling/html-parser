@@ -1,6 +1,7 @@
 import { AfterAttributeNameState, AfterAttributeValueQuotedState, AfterDOCTYPENameState, AfterDOCTYPEPublicIdentifierState, AfterDOCTYPEPublicKeywordState, AfterDOCTYPESystemIdentifierState, AfterDOCTYPESystemKeywordState, AmbiguousAmpersandState, AttributeNameState, AttributeValueDoubleQuotedState, AttributeValueSingleQuotedState, AttributeValueUnquotedState, BeforeAttributeNameState, BeforeAttributeValueState, BeforeDOCTYPENameState, BeforeDOCTYPEPublicIdentifierState, BeforeDOCTYPESystemIdentifierState, BetweenDOCTYPEPublicAndSystemIdentifiersState, BogusCommentState, BogusDOCTYPEState, CDATASectionBracketState, CDATASectionEndState, CDATASectionState, CharacterReferenceState, CommentEndBangState, CommentEndDashState, CommentEndState, CommentLessThanSignBangDashDashState, CommentLessThanSignBangDashState, CommentLessThanSignBangState, CommentLessThanSignState, CommentStartDashState, CommentStartState, CommentState, DataState, DecimalCharacterReferenceStartState, DecimalCharacterReferenceState, DOCTYPENameState, DOCTYPEPublicIdentifierDoubleQuotedState, DOCTYPEPublicIdentifierSingleQuotedState, DOCTYPEState, DOCTYPESystemIdentifierDoubleQuotedState, DOCTYPESystemIdentifierSingleQuotedState, EndTagOpenState, HexadecimalCharacterReferenceStartState, HexadecimalCharacterReferenceState, MarkupDeclarationOpenState, NamedCharacterReferenceState, NumericCharacterReferenceEndState, NumericCharacterReferenceState, PLAINTEXTState, RAWTEXTEndTagNameState, RAWTEXTEndTagOpenState, RAWTEXTLessThanSignState, RAWTEXTState, RCDATAEndTagNameState, RCDATAEndTagOpenState, RCDATALessThanSignState, RCDATAState, ScriptDataDoubleEscapedDashDashState, ScriptDataDoubleEscapedDashState, ScriptDataDoubleEscapedLessThanSignState, ScriptDataDoubleEscapedState, ScriptDataDoubleEscapeEndState, ScriptDataDoubleEscapeStartState, ScriptDataEndTagNameState, ScriptDataEndTagOpenState, ScriptDataEscapedDashDashState, ScriptDataEscapedDashState, ScriptDataEscapedEndTagNameState, ScriptDataEscapedEndTagOpenState, ScriptDataEscapedLessThanSignState, ScriptDataEscapedState, ScriptDataEscapeStartDashState, ScriptDataEscapeStartState, ScriptDataLessThanSignState, ScriptDataState, SelfClosingStartTagState, State, TagNameState, TagOpenState } from ".";
 import { Buffer } from "../buffer";
-import { CharacterToken, CommentToken, DOCTYPEToken, StartTagToken, EndTagToken } from "../token";
+import { CharacterToken, CommentToken, DOCTYPEToken, EndTagToken, StartTagToken } from "../token";
+import { Attribute } from '../token/start-tag-token';
 import Tokenizer from "../tokenizer";
 
 export abstract class AbstractState implements State {
@@ -79,6 +80,19 @@ export abstract class AbstractState implements State {
     // TODO
   }
 
+  isReturnState(...states: State[]): boolean {
+    for (const state of states) {
+      if (this.tokenizer.returnState === state) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  get buffer(): Buffer {
+    return this.tokenizer.buffer;
+  }
+
   get temporaryBuffer(): string {
     return this.tokenizer.temporaryBuffer;
   }
@@ -107,12 +121,13 @@ export abstract class AbstractState implements State {
     return this.tokenizer.endTagToken;
   }
 
-  get dataState(): DataState {
-    return this.tokenizer.dataState;
+  get currentTagAttribute(): Attribute {
+    const index = this.tokenizer.startTagToken.attributes.length - 1;
+    return this.tokenizer.startTagToken.attributes[index];
   }
 
-  get buffer(): Buffer {
-    return this.tokenizer.buffer;
+  get dataState(): DataState {
+    return this.tokenizer.dataState;
   }
 
   get rcdataState(): RCDATAState {

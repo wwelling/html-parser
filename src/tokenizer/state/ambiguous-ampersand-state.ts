@@ -19,7 +19,15 @@ export class AmbiguousAmpersandState extends AbstractState {
         break;
       default:
         if (isASCIIAlphanumeric(character)) {
-          // if the return state is either attribute value (double-quoted) state, attribute value (single-quoted) state or attribute value (unquoted) state
+          if (this.isReturnState(
+            this.attributeValueSingleQuotedState,
+            this.attributeValueDoubleQuotedState,
+            this.attributeValueUnquotedState
+          )) {
+            this.currentTagAttribute.value += character;
+          } else {
+            this.emitCharacterToken({ data: character });
+          }
         } else {
           this.reconsumeInReturnState(character);
         }
