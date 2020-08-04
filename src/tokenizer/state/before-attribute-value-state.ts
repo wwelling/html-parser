@@ -1,3 +1,4 @@
+import { Characters } from "../characters";
 import { AbstractState } from "./abstract-state";
 
 // 12.2.5.35 Before attribute value state
@@ -18,7 +19,25 @@ import { AbstractState } from "./abstract-state";
 export class BeforeAttributeValueState extends AbstractState {
   consume(character: string): void {
     switch (character) {
+      case Characters.CharacterTabulation:
+      case Characters.LineFeed:
+      case Characters.FormFeed:
+      case Characters.Space:
+        // ignore the character
+        break;
+      case Characters.QuotationMark:
+        this.switchState(this.attributeValueDoubleQuotedState);
+        break;
+      case Characters.Apostrophe:
+        this.switchState(this.attributeValueSingleQuotedState);
+        break;
+      case Characters.GreaterThanSign:
+        console.warn('missing-attribute-value parse error');
+        this.switchState(this.dataState);
+        this.emitStartTagToken();
+        break;
       default:
+        this.reconsumeInState(character, this.attributeValueUnquotedState);
         break;
     }
   }
