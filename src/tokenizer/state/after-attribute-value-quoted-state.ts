@@ -31,7 +31,6 @@ export class AfterAttributeValueQuotedState extends AbstractState {
         break;
       case Characters.GreaterThanSign:
         this.switchState(this.dataState);
-        // assume start tag token for now
         this.emitStartTagToken();
         break;
       case null:

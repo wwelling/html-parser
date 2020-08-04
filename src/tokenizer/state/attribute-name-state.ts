@@ -1,3 +1,4 @@
+import { Characters, isASCIIUpperAlpha } from "../characters";
 import { AbstractState } from "./abstract-state";
 
 // 12.2.5.33 Attribute name state
@@ -34,7 +35,35 @@ import { AbstractState } from "./abstract-state";
 export class AttributeNameState extends AbstractState {
   consume(character: string): void {
     switch (character) {
+      case Characters.CharacterTabulation:
+      case Characters.LineFeed:
+      case Characters.FormFeed:
+      case Characters.Space:
+      case Characters.Solidus:
+      case Characters.GreaterThanSign:
+      case null:
+        this.reconsumeInState(character, this.afterAttributeNameState);
+        break;
+      case Characters.EqualsSign:
+        this.switchState(this.beforeAttributeValueState);
+        break;
+      case Characters.NullCharacter:
+        console.warn('unexpected-null-character parse error');
+        this.currentTagAttribute.name += Characters.ReplacementCharacter;
+        break;
+      case Characters.QuotationMark:
+      case Characters.Apostrophe:
+      case Characters.LessThanSign:
+        console.warn('unexpected-character-in-attribute-name parse error');
+        this.currentTagAttribute.name += character;
+        break;
       default:
+        if (isASCIIUpperAlpha(character)) {
+          this.currentTagAttribute.name += character.toLowerCase();
+        } else {
+          console.warn('unexpected-character-in-attribute-name parse error');
+          this.currentTagAttribute.name += character;
+        }
         break;
     }
   }
