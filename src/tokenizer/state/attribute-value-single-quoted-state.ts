@@ -1,4 +1,5 @@
 import { AbstractState } from "./abstract-state";
+import { Characters } from "../characters";
 
 // 12.2.5.37 Attribute value (single-quoted) state
 // Consume the next input character:
@@ -16,7 +17,23 @@ import { AbstractState } from "./abstract-state";
 export class AttributeValueSingleQuotedState extends AbstractState {
   consume(character: string): void {
     switch (character) {
+      case Characters.Apostrophe:
+        this.switchState(this.afterAttributeValueQuotedState);
+        break;
+      case Characters.Ampersand:
+        this.setReturnState(this.attributeValueSingleQuotedState);
+        this.switchState(this.characterReferenceState);
+        break;
+      case Characters.NullCharacter:
+        console.warn('unexpected-null-character parse error');
+        this.currentTagAttribute.value += Characters.ReplacementCharacter;
+        break;
+      case null:
+        console.warn('eof-in-tag parse error');
+        this.emitEndOfFileToken();
+        break;
       default:
+        this.currentTagAttribute.value += character;
         break;
     }
   }

@@ -26,7 +26,7 @@ export class AttributeValueDoubleQuotedState extends AbstractState {
         break;
       case Characters.NullCharacter:
         console.warn('unexpected-null-character parse error');
-        this.currentTagAttribute.name += Characters.ReplacementCharacter;
+        this.currentTagAttribute.value += Characters.ReplacementCharacter;
         break;
       case null:
         console.warn('eof-in-tag parse error');
