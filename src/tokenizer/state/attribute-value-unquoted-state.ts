@@ -1,4 +1,5 @@
 import { AbstractState } from "./abstract-state";
+import { Characters } from "../characters";
 
 // 12.2.5.38 Attribute value (unquoted) state
 // Consume the next input character:
@@ -27,7 +28,38 @@ import { AbstractState } from "./abstract-state";
 export class AttributeValueUnquotedState extends AbstractState {
   consume(character: string): void {
     switch (character) {
+      case Characters.CharacterTabulation:
+      case Characters.LineFeed:
+      case Characters.FormFeed:
+      case Characters.Space:
+        this.switchState(this.beforeAttributeNameState);
+        break;
+      case Characters.Ampersand:
+        this.setReturnState(this.attributeValueUnquotedState);
+        this.switchState(this.characterReferenceState);
+        break;
+      case Characters.GreaterThanSign:
+        this.switchState(this.dataState);
+        this.emitStartTagToken();
+        break;
+      case Characters.NullCharacter:
+        console.warn('unexpected-null-character parse error');
+        this.currentTagAttribute.value += Characters.ReplacementCharacter;
+        break;
+      case Characters.QuotationMark:
+      case Characters.Apostrophe:
+      case Characters.LessThanSign:
+      case Characters.EqualsSign:
+      case Characters.GraveAccent:
+        console.warn('unexpected-character-in-unquoted-attribute-value parse error');
+        this.currentTagAttribute.value += character;
+        break;
+      case null:
+        console.warn('eof-in-tag parse error');
+        this.emitEndOfFileToken();
+        break;
       default:
+        this.currentTagAttribute.value += character;
         break;
     }
   }
