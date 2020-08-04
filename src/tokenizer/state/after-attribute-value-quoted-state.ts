@@ -31,7 +31,7 @@ export class AfterAttributeValueQuotedState extends AbstractState {
         break;
       case Characters.GreaterThanSign:
         this.switchState(this.dataState);
-        this.emitStartTagToken();
+        this.emitCurrentTagToken();
         break;
       case null:
         console.warn('eof-in-tag parse error');

@@ -40,7 +40,7 @@ export class AttributeValueUnquotedState extends AbstractState {
         break;
       case Characters.GreaterThanSign:
         this.switchState(this.dataState);
-        this.emitStartTagToken();
+        this.emitCurrentTagToken();
         break;
       case Characters.NullCharacter:
         console.warn('unexpected-null-character parse error');

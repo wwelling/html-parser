@@ -107,6 +107,8 @@ export default class Tokenizer {
 
   startTagToken: StartTagToken;
 
+  lastEmmitedStartTagToken: StartTagToken;
+
   endTagToken: EndTagToken;
 
   running: boolean;

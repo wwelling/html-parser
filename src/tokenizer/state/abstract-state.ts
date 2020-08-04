@@ -48,22 +48,32 @@ export abstract class AbstractState implements State {
 
   emitCommentToken(): void {
     this._tokenizer.callbacks.emitCommentToken(this._tokenizer.commentToken);
+    delete this._tokenizer.commentToken;
   }
 
   emitDOCTYPEToken(): void {
     this._tokenizer.callbacks.emitDOCTYPEToken(this._tokenizer.doctypeToken);
+    delete this._tokenizer.doctypeToken;
   }
 
-  emitStartTagToken(): void {
-    this._tokenizer.callbacks.emitStartTagToken(this._tokenizer.startTagToken);
-  }
-
-  emitEndTagToken(): void {
-    this._tokenizer.callbacks.emitEndTagToken(this._tokenizer.endTagToken);
+  emitCurrentTagToken(): void {
+    if (this._tokenizer.startTagToken !== undefined) {
+      this.emitStartTagToken();
+    } else if (this._tokenizer.endTagToken !== undefined) {
+      this.emitEndTagToken();
+    } else {
+      console.warn('there is no tag token prepared');
+    }
   }
 
   emitEndOfFileToken(): void {
     this._tokenizer.callbacks.emitEndOfFileToken();
+  }
+
+  isAppropriateEndTagToken(): boolean {
+    return this._tokenizer.lastEmmitedStartTagToken !== undefined
+      ? this._tokenizer.lastEmmitedStartTagToken.name === this._tokenizer.endTagToken.name
+      : false;
   }
 
   reconsumeInState(character: string, state: State): void {
@@ -87,6 +97,17 @@ export abstract class AbstractState implements State {
       }
     }
     return false;
+  }
+
+  private emitStartTagToken(): void {
+    this._tokenizer.callbacks.emitStartTagToken(this._tokenizer.startTagToken);
+    this._tokenizer.lastEmmitedStartTagToken = this._tokenizer.startTagToken;
+    delete this._tokenizer.startTagToken;
+  }
+
+  private emitEndTagToken(): void {
+    this._tokenizer.callbacks.emitEndTagToken(this._tokenizer.endTagToken);
+    delete this._tokenizer.endTagToken;
   }
 
   get buffer(): Buffer {

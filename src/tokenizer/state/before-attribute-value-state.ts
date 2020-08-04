@@ -34,7 +34,7 @@ export class BeforeAttributeValueState extends AbstractState {
       case Characters.GreaterThanSign:
         console.warn('missing-attribute-value parse error');
         this.switchState(this.dataState);
-        this.emitStartTagToken();
+        this.emitCurrentTagToken();
         break;
       default:
         this.reconsumeInState(character, this.attributeValueUnquotedState);
