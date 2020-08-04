@@ -1,3 +1,4 @@
+import { Characters } from "../characters";
 import { AbstractState } from "./abstract-state";
 
 // 12.2.5.36 Attribute value (double-quoted) state
@@ -16,7 +17,23 @@ import { AbstractState } from "./abstract-state";
 export class AttributeValueDoubleQuotedState extends AbstractState {
   consume(character: string): void {
     switch (character) {
+      case Characters.QuotationMark:
+        this.switchState(this.afterAttributeValueQuotedState);
+        break;
+      case Characters.Ampersand:
+        this.setReturnState(this.attributeValueDoubleQuotedState);
+        this.switchState(this.characterReferenceState);
+        break;
+      case Characters.NullCharacter:
+        console.warn('unexpected-null-character parse error');
+        this.currentTagAttribute.name += Characters.ReplacementCharacter;
+        break;
+      case null:
+        console.warn('eof-in-tag parse error');
+        this.emitEndOfFileToken();
+        break;
       default:
+        this.currentTagAttribute.value += character;
         break;
     }
   }
