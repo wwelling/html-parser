@@ -1,3 +1,4 @@
+import { Characters } from "../characters";
 import { AbstractState } from "./abstract-state";
 
 // 12.2.5.32 Before attribute name state
@@ -21,7 +22,25 @@ import { AbstractState } from "./abstract-state";
 export class BeforeAttributeNameState extends AbstractState {
   consume(character: string): void {
     switch (character) {
+      case Characters.CharacterTabulation:
+      case Characters.LineFeed:
+      case Characters.FormFeed:
+      case Characters.Space:
+        // ignore the character
+        break;
+      case Characters.Solidus:
+      case Characters.GreaterThanSign:
+      case null:
+        this.reconsumeInState(character, this.afterAttributeNameState);
+        break;
+      case Characters.EqualsSign:
+        console.warn('unexpected-equals-sign-before-attribute-name parse error');
+        this.startNewTagAttribute(character);
+        this.switchState(this.attributeNameState);
+        break;
       default:
+        this.startNewTagAttribute();
+        this.reconsumeInState(character, this.attributeNameState);
         break;
     }
   }
