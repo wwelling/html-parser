@@ -1,3 +1,0 @@
-[submodule "htmlparser-benchmark"]
-	path = htmlparser-benchmark
-	url = https://github.com/wwelling/htmlparser-benchmark.git
